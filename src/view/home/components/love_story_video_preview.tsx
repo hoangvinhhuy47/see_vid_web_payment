@@ -5,7 +5,7 @@ import { Play } from "lucide-react";
 
 interface LoveStoryVideoPreviewProps {
   index: number;
-  previews: { id: string; caption: string }[];
+  previews: { id: string; caption: string; videoUrl?: string }[];
 }
 
 export default function LoveStoryVideoPreview({
@@ -126,13 +126,13 @@ export default function LoveStoryVideoPreview({
           ref={(element) => {
             videoRefs.current[position] = element;
           }}
-          src={`https://aistudio.picify.net/images/${preview.id}/thumb_450x800/${preview.id}.mp4`}
+          src={preview.videoUrl ?? `https://aistudio.picify.net/images/${preview.id}/thumb_450x800/${preview.id}.mp4`}
           aria-hidden={position !== visibleIndex}
           className={`absolute inset-0 h-full w-full object-cover ${position === visibleIndex ? "opacity-100" : "opacity-0"}`}
           muted={position === index ? muted : true}
           loop
           playsInline
-          preload={position <= index + 1 ? "auto" : "metadata"}
+          preload={position === index || position === index + 1 ? "auto" : "none"}
           onPlay={() => {
             if (position === index) setPlaying(true);
           }}

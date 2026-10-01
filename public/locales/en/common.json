@@ -38,17 +38,17 @@
   "errors": {
     "404": {
       "code": "404",
-      "title": "Spell Disrupted: Page Not Found",
-      "description": "The enchanted portal you seek has vanished into another dimension. Check the address or teleport back safely.",
-      "back_home": "Return to Sanctuary",
-      "try_again": "Try Portal Again"
+      "title": "Page Not Found",
+      "description": "This page does not exist. Check the link or go home.",
+      "back_home": "Go Home",
+      "try_again": "Go Back"
     },
     "500": {
       "code": "500",
-      "title": "Arcane Catastrophe: Server Error",
-      "description": "A magical anomaly has destabilized our realm. Our wizards are actively restoring equilibrium.",
-      "back_home": "Back to Safety",
-      "reload": "Cast Recovery Spell"
+      "title": "Server Error",
+      "description": "Something went wrong. Please try again.",
+      "back_home": "Go Home",
+      "reload": "Try Again"
     }
   },
   "common": {
