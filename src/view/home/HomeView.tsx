@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import WelcomeView from "./components/wellcome_home";
-import WhoIsThisForView from "./components/create_video_for";
+import LoveStoryFlow, {
+  type LoveStoryAnswers,
+} from "./components/love_story_flow";
 import UploadPhotoView from "./components/upload_photo";
 import GeneratingVideoView from "./components/createing_video";
 import EmailView from "./components/input_email_create_video";
@@ -8,7 +9,6 @@ import ShopSection from "@/components/stripe/ShopSection";
 
 enum CreateVideoStep {
   Welcome = 1,
-  WhoIsThisFor = 2,
   UploadPhoto = 3,
   Generating = 4,
   Email = 5,
@@ -16,25 +16,18 @@ enum CreateVideoStep {
 }
 
 export const HomeView: React.FC = () => {
-  const [step, setStep] = useState<CreateVideoStep>(CreateVideoStep.Shop);
+  const [step, setStep] = useState<CreateVideoStep>(CreateVideoStep.Welcome);
 
   const [email, setEmail] = useState("");
+  const [, setStoryAnswers] = useState<LoveStoryAnswers | null>(null);
 
   const renderStep = () => {
     switch (step) {
       case CreateVideoStep.Welcome:
         return (
-          <WelcomeView
-            onContinue={() => {
-              setStep(CreateVideoStep.WhoIsThisFor);
-            }}
-          />
-        );
-
-      case CreateVideoStep.WhoIsThisFor:
-        return (
-          <WhoIsThisForView
-            onContinue={() => {
+          <LoveStoryFlow
+            onComplete={(answers) => {
+              setStoryAnswers(answers);
               setStep(CreateVideoStep.UploadPhoto);
             }}
           />
@@ -75,6 +68,10 @@ export const HomeView: React.FC = () => {
         return null;
     }
   };
+
+  if (step === CreateVideoStep.Welcome) {
+    return renderStep();
+  }
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-start pt-6 pb-12">
