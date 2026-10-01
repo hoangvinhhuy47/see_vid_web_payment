@@ -166,7 +166,7 @@ export default function LoveStoryVideoPreview({
         className="absolute right-2 top-2 flex h-11 w-11 items-center justify-center rounded-full bg-black/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
       >
         <img
-          src={muted ? "/icons/sound_mute.png" : "/icons/sound_on.png"}
+          src={muted ? "/icons/sound_mute.webp" : "/icons/sound_play.webp"}
           alt=""
           className="h-8 w-8 object-contain"
         />
