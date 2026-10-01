@@ -32,11 +32,16 @@ export default function ResultVideoCard({
           px-5
         "
       >
-        <h2 className="text-center text-2xl font-bold tracking-tight text-white">
+        <img
+          src="/icons/ic_lock.png"
+          alt="Logo"
+          className="h-[48px] w-auto shrink-0 object-contain mb-4"
+        />
+        <h2 className="text-center text-[14px] font-bold tracking-tight text-white">
           YOUR RESULT IS READY
         </h2>
 
-        <p className="mt-2 text-center text-sm font-medium text-white/80">
+        <p className="mt-2 text-center text-[21px]  text-[#FDF400]">
           Create without limits
         </p>
       </div>
