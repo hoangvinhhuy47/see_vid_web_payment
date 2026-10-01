@@ -30,13 +30,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   return (
     <div
       className="
-    flex flex-col
-    bg-black
-        bg-[radial-gradient(circle_at_50%_0%,rgba(164,79,232,0.18)_0%,transparent_45%),radial-gradient(circle_at_50%_100%,rgba(38,0,255,0.16)_0%,transparent_45%)]
-    text-slate-100
-    relative
-    overflow-x-hidden
-  "
+                bg-black
+                  bg-[radial-gradient(circle_at_50%_0%,rgba(164,79,232,0.18)_0%,transparent_45%),radial-gradient(circle_at_50%_100%,rgba(38,0,255,0.16)_0%,transparent_45%)]
+                  w-full
+              "
     >
       <Head>
         <title>{pageTitle}</title>
@@ -45,9 +42,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex-1 flex flex-col w-full max-w-[430px] mx-auto h-full">
-        {children}
-      </main>
+      <main className="max-w-md mx-auto flex flex-col min-h-screen">{children}</main>
     </div>
   );
 };
