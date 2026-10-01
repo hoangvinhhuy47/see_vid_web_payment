@@ -1,0 +1,62 @@
+{
+  "app": {
+    "title": "SeeVid",
+    "tagline": "Troque, combine e lance feitiços na aventura mágica definitiva de quebra-cabeças!"
+  },
+  "nav": {
+    "home": "Início",
+    "play": "Jogar",
+    "leaderboard": "Classificação",
+    "settings": "Configurações",
+    "language": "Idioma"
+  },
+  "home": {
+    "welcome": "Bem-vindo ao SeeVid",
+    "subtitle": "Mergulhe em quebra-cabeças mágicos de troca. Combine runas antigas e desvende segredos!",
+    "play_now": "Jogar Agora",
+    "explore": "Explorar Níveis",
+    "features_title": "Recursos do Jogo",
+    "feature_1_title": "Troca Mística",
+    "feature_1_desc": "Troque peças mágicas adjacentes para criar linhas de energia arcana.",
+    "feature_2_title": "Classificação Global",
+    "feature_2_desc": "Compita com jogadores de todo o mundo em 13 idiomas.",
+    "feature_3_title": "Desafios Diários",
+    "feature_3_desc": "Resolva novos quebra-cabeças diários para ganhar gemas raras e bônus."
+  },
+  "puzzle": {
+    "score": "Pontuação",
+    "moves": "Jogadas Restantes",
+    "level": "Nível",
+    "target": "Objetivo",
+    "swap": "Trocar",
+    "shuffle": "Embaralhar",
+    "hint": "Dica",
+    "restart": "Reiniciar",
+    "game_over": "Fim de Jogo",
+    "level_cleared": "Nível Concluído!"
+  },
+  "errors": {
+    "404": {
+      "code": "404",
+      "title": "Feitiço Interrompido: Página Não Encontrada",
+      "description": "O portal encantado que você procura desapareceu em outra dimensão. Verifique o endereço ou retorne em segurança.",
+      "back_home": "Retornar ao Santuário",
+      "try_again": "Tentar Portal Novamente"
+    },
+    "500": {
+      "code": "500",
+      "title": "Catástrofe Arcana: Erro no Servidor",
+      "description": "Uma anomalia mágica desestabilizou o reino. Nossos magos estão restaurando o equilíbrio.",
+      "back_home": "Voltar para Segurança",
+      "reload": "Lançar Feitiço de Recuperação"
+    }
+  },
+  "common": {
+    "loading": "Canalizando magia...",
+    "error": "Ocorreu um erro",
+    "success": "Sucesso!",
+    "close": "Fechar",
+    "save": "Salvar",
+    "cancel": "Cancelar"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "app": {
+    "title": "매직 스왑 퍼즐",
+    "tagline": "교환하고 맞추며 마법을 시전하는 최고의 퍼즐 어드벤처!"
+  },
+  "nav": {
+    "home": "홈",
+    "play": "게임 시작",
+    "leaderboard": "순위표",
+    "settings": "설정",
+    "language": "언어"
+  },
+  "home": {
+    "welcome": "매직 스왑 퍼즐에 오신 것을 환영합니다",
+    "subtitle": "신비로운 스왑 퍼즐의 세계에 빠져보세요. 고대 룬을 맞추고 비밀을 잠금 해제하세요!",
+    "play_now": "지금 플레이",
+    "explore": "레벨 탐색",
+    "features_title": "게임 특징",
+    "feature_1_title": "신비로운 스왑",
+    "feature_1_desc": "인접한 마법 타일을 교환하여 신비로운 에너지를 연결하세요.",
+    "feature_2_title": "글로벌 리더보드",
+    "feature_2_desc": "13개 언어로 전 세계 플레이어들과 경쟁하세요.",
+    "feature_3_title": "일일 챌린지",
+    "feature_3_desc": "매일 새로운 퍼즐을 풀고 희귀한 보석과 부스터를 획득하세요."
+  },
+  "puzzle": {
+    "score": "점수",
+    "moves": "남은 이동",
+    "level": "레벨",
+    "target": "목표",
+    "swap": "교환",
+    "shuffle": "섞기",
+    "hint": "힌트",
+    "restart": "다시 시작",
+    "game_over": "게임 오버",
+    "level_cleared": "레벨 클리어!"
+  },
+  "errors": {
+    "404": {
+      "code": "404",
+      "title": "주문 중단: 페이지를 찾을 수 없음",
+      "description": "찾으시는 마법의 포털이 다른 차원으로 사라졌습니다. 주소를 확인하거나 안전하게 돌아가세요.",
+      "back_home": "성소로 돌아가기",
+      "try_again": "포털 다시 시도"
+    },
+    "500": {
+      "code": "500",
+      "title": "비전 재앙: 서버 오류",
+      "description": "마법의 변칙으로 인해 왕국이 불안정해졌습니다. 마법사들이 균형을 복원하고 있습니다.",
+      "back_home": "안전한 곳으로",
+      "reload": "회복 주문 시전"
+    }
+  },
+  "common": {
+    "loading": "마법을 모으는 중...",
+    "error": "오류가 발생했습니다",
+    "success": "성공!",
+    "close": "닫기",
+    "save": "저장",
+    "cancel": "취소"
+  }
+}

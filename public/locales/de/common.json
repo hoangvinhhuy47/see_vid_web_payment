@@ -1,0 +1,62 @@
+{
+  "app": {
+    "title": "SeeVid",
+    "tagline": "Tausche, kombiniere und wirke Zauber im ultimativen Puzzle-Abenteuer!"
+  },
+  "nav": {
+    "home": "Startseite",
+    "play": "Spielen",
+    "leaderboard": "Bestenliste",
+    "settings": "Einstellungen",
+    "language": "Sprache"
+  },
+  "home": {
+    "welcome": "Willkommen bei SeeVid",
+    "subtitle": "Tauche ein in mystische Tausch-Rätsel. Kombiniere uralte Runen und lüfte Geheimnisse!",
+    "play_now": "Jetzt spielen",
+    "explore": "Level erkunden",
+    "features_title": "Spielfunktionen",
+    "feature_1_title": "Magisches Tauschen",
+    "feature_1_desc": "Tausche benachbarte magische Kacheln, um mystische Energielinien zu bilden.",
+    "feature_2_title": "Globale Bestenlisten",
+    "feature_2_desc": "Messe dich weltweit mit Spielern in 13 unterstützten Sprachen.",
+    "feature_3_title": "Tägliche Herausforderungen",
+    "feature_3_desc": "Löse täglich neue Rätsel, um seltene Edelsteine und Booster zu gewinnen."
+  },
+  "puzzle": {
+    "score": "Punktzahl",
+    "moves": "Verbleibende Züge",
+    "level": "Level",
+    "target": "Ziel",
+    "swap": "Tauschen",
+    "shuffle": "Mischen",
+    "hint": "Hinweis",
+    "restart": "Neu starten",
+    "game_over": "Spiel vorbei",
+    "level_cleared": "Level geschafft!"
+  },
+  "errors": {
+    "404": {
+      "code": "404",
+      "title": "Zauber unterbrochen: Seite nicht gefunden",
+      "description": "Das verzauberte Portal, das du suchst, ist in einer anderen Dimension verschwunden. Überprüfe die Adresse oder kehre sicher zurück.",
+      "back_home": "Zurück zum Heiligtum",
+      "try_again": "Portal erneut versuchen"
+    },
+    "500": {
+      "code": "500",
+      "title": "Arkane Katastrophe: Serverfehler",
+      "description": "Eine magische Anomalie hat unser Reich destabilisiert. Unsere Zauberer stellen das Gleichgewicht wieder her.",
+      "back_home": "Zurück zur Sicherheit",
+      "reload": "Wiederherstellungszauber wirken"
+    }
+  },
+  "common": {
+    "loading": "Magie wird kanalisiert...",
+    "error": "Ein Fehler ist aufgetreten",
+    "success": "Erfolg!",
+    "close": "Schließen",
+    "save": "Speichern",
+    "cancel": "Abbrechen"
+  }
+}

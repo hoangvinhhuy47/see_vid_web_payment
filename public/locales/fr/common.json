@@ -1,0 +1,62 @@
+{
+  "app": {
+    "title": "SeeVid",
+    "tagline": "Échangez, associez et lancez des sorts dans l'aventure ultime de puzzle !"
+  },
+  "nav": {
+    "home": "Accueil",
+    "play": "Jouer",
+    "leaderboard": "Classement",
+    "settings": "Paramètres",
+    "language": "Langue"
+  },
+  "home": {
+    "welcome": "Bienvenue sur SeeVid",
+    "subtitle": "Plongez dans des énigmes magiques. Associez des runes anciennes et débloquez des secrets !",
+    "play_now": "Jouer Maintenant",
+    "explore": "Explorer les Niveaux",
+    "features_title": "Caractéristiques du Jeu",
+    "feature_1_title": "Échange Mystique",
+    "feature_1_desc": "Échangez des tuiles magiques adjacentes pour former des flux d'énergie.",
+    "feature_2_title": "Classement Mondial",
+    "feature_2_desc": "Affrontez des joueurs du monde entier dans 13 langues prises en charge.",
+    "feature_3_title": "Défis Quotidiens",
+    "feature_3_desc": "Résolvez de nouveaux défis chaque jour pour gagner des gemmes rares et des bonus."
+  },
+  "puzzle": {
+    "score": "Score",
+    "moves": "Coups Restants",
+    "level": "Niveau",
+    "target": "Objectif",
+    "swap": "Échanger",
+    "shuffle": "Mélanger",
+    "hint": "Indice",
+    "restart": "Recommencer",
+    "game_over": "Partie Terminée",
+    "level_cleared": "Niveau Réussi !"
+  },
+  "errors": {
+    "404": {
+      "code": "404",
+      "title": "Sort Interrompu : Page Introuvable",
+      "description": "Le portail enchanté que vous cherchez a disparu dans une autre dimension. Vérifiez l'adresse ou revenez en sécurité.",
+      "back_home": "Retour au Sanctuaire",
+      "try_again": "Réessayer le Portail"
+    },
+    "500": {
+      "code": "500",
+      "title": "Catastrophe profane : Erreur Serveur",
+      "description": "Une anomalie magique a déstabilisé notre royaume. Nos mages restaurent activement l'équilibre.",
+      "back_home": "Retourner en Sécurité",
+      "reload": "Lancer un Sort de Récupération"
+    }
+  },
+  "common": {
+    "loading": "Canalisation de la magie...",
+    "error": "Une erreur est survenue",
+    "success": "Succès !",
+    "close": "Fermer",
+    "save": "Sauvegarder",
+    "cancel": "Annuler"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "app": {
+    "title": "SeeVid",
+    "tagline": "¡Intercambia, combina y lanza hechizos en la aventura definitiva de puzles!"
+  },
+  "nav": {
+    "home": "Inicio",
+    "play": "Jugar",
+    "leaderboard": "Clasificación",
+    "settings": "Ajustes",
+    "language": "Idioma"
+  },
+  "home": {
+    "welcome": "Bienvenido a SeeVid",
+    "subtitle": "Sumérgete en místicos rompecabezas de intercambio. ¡Combina runas antiguas y desbloquea secretos!",
+    "play_now": "Jugar ahora",
+    "explore": "Explorar niveles",
+    "features_title": "Características del juego",
+    "feature_1_title": "Intercambio Místico",
+    "feature_1_desc": "Intercambia fichas mágicas adyacentes para formar líneas de energía mística.",
+    "feature_2_title": "Clasificaciones Globales",
+    "feature_2_desc": "Compite con jugadores de todo el mundo en 13 idiomas compatibles.",
+    "feature_3_title": "Desafíos Diarios",
+    "feature_3_desc": "Resuelve nuevos rompecabezas diarios para ganar gemas raras y potenciadores."
+  },
+  "puzzle": {
+    "score": "Puntuación",
+    "moves": "Movimientos restantes",
+    "level": "Nivel",
+    "target": "Objetivo",
+    "swap": "Intercambiar",
+    "shuffle": "Mezclar",
+    "hint": "Pista",
+    "restart": "Reiniciar",
+    "game_over": "Fin del juego",
+    "level_cleared": "¡Nivel superado!"
+  },
+  "errors": {
+    "404": {
+      "code": "404",
+      "title": "Hechizo interrumpido: Página no encontrada",
+      "description": "El portal encantado que buscas se ha desvanecido en otra dimensión. Revisa la dirección o regresa a salvo.",
+      "back_home": "Volver al santuario",
+      "try_again": "Reintentar portal"
+    },
+    "500": {
+      "code": "500",
+      "title": "Catástrofe arcana: Error del servidor",
+      "description": "Una anomalía mágica ha desestabilizado nuestro reino. Nuestros magos están restaurando el equilibrio.",
+      "back_home": "Volver a un lugar seguro",
+      "reload": "Lanzar hechizo de recuperación"
+    }
+  },
+  "common": {
+    "loading": "Canalizando magia...",
+    "error": "Ocurrió un error",
+    "success": "¡Éxito!",
+    "close": "Cerrar",
+    "save": "Guardar",
+    "cancel": "Cancelar"
+  }
+}

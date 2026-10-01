@@ -1,0 +1,62 @@
+{
+  "app": {
+    "title": "SeeVid",
+    "tagline": "Create unique and engaging videos with the power of AI. Turn your ideas and images into creative videos quickly and easily."
+  },
+  "nav": {
+    "home": "Home",
+    "play": "Play Game",
+    "leaderboard": "Leaderboard",
+    "settings": "Settings",
+    "language": "Language"
+  },
+  "home": {
+    "welcome": "Welcome to SeeVid",
+    "subtitle": "Immerse yourself in mystical swap puzzles. Match ancient runes and unlock secrets!",
+    "play_now": "Play Now",
+    "explore": "Explore Levels",
+    "features_title": "Game Features",
+    "feature_1_title": "Mystic Swapping",
+    "feature_1_desc": "Swap adjacent magical tiles to form lines of mystical energy.",
+    "feature_2_title": "Global Leaderboards",
+    "feature_2_desc": "Compete with players worldwide across 13 supported languages.",
+    "feature_3_title": "Daily Challenges",
+    "feature_3_desc": "Solve fresh daily puzzles to win rare gems and boosters."
+  },
+  "puzzle": {
+    "score": "Score",
+    "moves": "Moves Left",
+    "level": "Level",
+    "target": "Target",
+    "swap": "Swap",
+    "shuffle": "Shuffle",
+    "hint": "Hint",
+    "restart": "Restart",
+    "game_over": "Game Over",
+    "level_cleared": "Level Cleared!"
+  },
+  "errors": {
+    "404": {
+      "code": "404",
+      "title": "Spell Disrupted: Page Not Found",
+      "description": "The enchanted portal you seek has vanished into another dimension. Check the address or teleport back safely.",
+      "back_home": "Return to Sanctuary",
+      "try_again": "Try Portal Again"
+    },
+    "500": {
+      "code": "500",
+      "title": "Arcane Catastrophe: Server Error",
+      "description": "A magical anomaly has destabilized our realm. Our wizards are actively restoring equilibrium.",
+      "back_home": "Back to Safety",
+      "reload": "Cast Recovery Spell"
+    }
+  },
+  "common": {
+    "loading": "Channeling magic...",
+    "error": "An error occurred",
+    "success": "Success!",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel"
+  }
+}

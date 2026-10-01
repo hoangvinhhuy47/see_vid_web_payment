@@ -1,0 +1,62 @@
+{
+  "app": {
+    "title": "SeeVid",
+    "tagline": "Tukar, padan, dan jampi dalam pengembaraan teka-teki ajaib yang hebat!"
+  },
+  "nav": {
+    "home": "Laman Utama",
+    "play": "Main",
+    "leaderboard": "Papan Pendahulu",
+    "settings": "Tetapan",
+    "language": "Bahasa"
+  },
+  "home": {
+    "welcome": "Selamat Datang ke SeeVid",
+    "subtitle": "Selami teka-teki pertukaran mistik. Padankan rune purba dan buka kunci rahsia!",
+    "play_now": "Main Sekarang",
+    "explore": "Terokai Tahap",
+    "features_title": "Ciri-ciri Permainan",
+    "feature_1_title": "Pertukaran Mistik",
+    "feature_1_desc": "Tukar jubin ajaib bersebelahan untuk membentuk aliran tenaga mistik.",
+    "feature_2_title": "Papan Pendahulu Global",
+    "feature_2_desc": "Bersaing dengan pemain di seluruh dunia dalam 13 bahasa yang disokong.",
+    "feature_3_title": "Cabaran Harian",
+    "feature_3_desc": "Selesaikan teka-teki harian baharu untuk memenangi permata dan penggalak jarang."
+  },
+  "puzzle": {
+    "score": "Skor",
+    "moves": "Langkah Berbaki",
+    "level": "Tahap",
+    "target": "Sasaran",
+    "swap": "Tukar",
+    "shuffle": "Kocok",
+    "hint": "Petunjuk",
+    "restart": "Mula Semula",
+    "game_over": "Tamat Permainan",
+    "level_cleared": "Tahap Selesai!"
+  },
+  "errors": {
+    "404": {
+      "code": "404",
+      "title": "Jampi Terganggu: Halaman Tidak Dijumpai",
+      "description": "Portal ajaib yang anda cari telah lenyap ke dimensi lain. Semak alamat atau kembali dengan selamat.",
+      "back_home": "Kembali ke Tempat Suci",
+      "try_again": "Cuba Portal Semula"
+    },
+    "500": {
+      "code": "500",
+      "title": "Bencana Mistikal: Ralat Pelayan",
+      "description": "Anomali magis telah mengganggu kestabilan alam kami. Ahli sihir kami sedang memulihkan keadaan.",
+      "back_home": "Kembali ke Keselamatan",
+      "reload": "Lancarkan Jampi Pemulihan"
+    }
+  },
+  "common": {
+    "loading": "Menyalurkan magis...",
+    "error": "Ralat telah berlaku",
+    "success": "Berjaya!",
+    "close": "Tutup",
+    "save": "Simpan",
+    "cancel": "Batal"
+  }
+}

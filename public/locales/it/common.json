@@ -1,0 +1,62 @@
+{
+  "app": {
+    "title": "SeeVid",
+    "tagline": "Scambia, abbina e lancia incantesimi nella magica avventura di puzzle!"
+  },
+  "nav": {
+    "home": "Home",
+    "play": "Gioca",
+    "leaderboard": "Classifica",
+    "settings": "Impostazioni",
+    "language": "Lingua"
+  },
+  "home": {
+    "welcome": "Benvenuto in SeeVid",
+    "subtitle": "Immergiti nei misteriosi enigmi di scambio. Abbina rune antiche e svela i segreti!",
+    "play_now": "Gioca Ora",
+    "explore": "Esplora Livelli",
+    "features_title": "Caratteristiche del Gioco",
+    "feature_1_title": "Scambio Mistico",
+    "feature_1_desc": "Scambia le tessere magiche adiacenti per formare linee di energia.",
+    "feature_2_title": "Classifiche Mondiali",
+    "feature_2_desc": "Competi con giocatori di tutto il mondo in 13 lingue supportate.",
+    "feature_3_title": "Sfide Giornaliere",
+    "feature_3_desc": "Risolvi nuovi puzzle ogni giorno per vincere gemme rare e potenziamenti."
+  },
+  "puzzle": {
+    "score": "Punteggio",
+    "moves": "Mosse Rimanenti",
+    "level": "Livello",
+    "target": "Obiettivo",
+    "swap": "Scambia",
+    "shuffle": "Mescola",
+    "hint": "Suggerimento",
+    "restart": "Ricomincia",
+    "game_over": "Partita Finita",
+    "level_cleared": "Livello Completato!"
+  },
+  "errors": {
+    "404": {
+      "code": "404",
+      "title": "Incantesimo Interrotto: Pagina Non Trovata",
+      "description": "Il portale incantato che cerchi è svanito in un'altra dimensione. Controlla l'indirizzo o torna al sicuro.",
+      "back_home": "Ritorna al Santuario",
+      "try_again": "Riprova il Portale"
+    },
+    "500": {
+      "code": "500",
+      "title": "Catastrofe Arcana: Errore del Server",
+      "description": "Un'anomalia magica ha destabilizzato il nostro regno. I nostri maghi stanno ripristinando l'equilibrio.",
+      "back_home": "Torna al Sicuro",
+      "reload": "Lancia Incantesimo di Recupero"
+    }
+  },
+  "common": {
+    "loading": "Incanalando la magia...",
+    "error": "Si è verificato un errore",
+    "success": "Successo!",
+    "close": "Chiudi",
+    "save": "Salva",
+    "cancel": "Annulla"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "app": {
+    "title": "SeeVid",
+    "tagline": "Magpalit, magtugma, at magpakawala ng mahika sa pambihirang puzzle adventure!"
+  },
+  "nav": {
+    "home": "Home",
+    "play": "Maglaro",
+    "leaderboard": "Leaderboard",
+    "settings": "Mga Setting",
+    "language": "Wika"
+  },
+  "home": {
+    "welcome": "Maligayang pagdating sa SeeVid",
+    "subtitle": "Magpakasawa sa mga mahiwagang swap puzzle. Itugma ang mga sinaunang rune at tuklasin ang mga lihim!",
+    "play_now": "Maglaro Ngayon",
+    "explore": "Galugarin ang mga Antas",
+    "features_title": "Mga Tampok ng Laro",
+    "feature_1_title": "Mahiwagang Pagpapalitan",
+    "feature_1_desc": "Magpalit ng mga katabing mahiwagang tile para bumuo ng mga linya ng enerhiya.",
+    "feature_2_title": "Pandaigdigang Leaderboard",
+    "feature_2_desc": "Makipagkumpitensya sa mga manlalaro sa buong mundo sa 13 sinusuportahang wika.",
+    "feature_3_title": "Araw-araw na Hamon",
+    "feature_3_desc": "Lutasin ang mga sariwang puzzle araw-araw upang manalo ng mga bihirang hiyas at booster."
+  },
+  "puzzle": {
+    "score": "Puntos",
+    "moves": "Natitirang Galaw",
+    "level": "Antas",
+    "target": "Target",
+    "swap": "Palit",
+    "shuffle": "I-shuffle",
+    "hint": "Pahiwatig",
+    "restart": "Simulan Muli",
+    "game_over": "Tapos na ang Laro",
+    "level_cleared": "Nalinis ang Antas!"
+  },
+  "errors": {
+    "404": {
+      "code": "404",
+      "title": "Nabulabog ang Mahika: Hindi Nahanap ang Pahina",
+      "description": "Ang portal na hinahanap mo ay naglaho sa ibang dimensyon. Suriin ang address o bumalik nang ligtas.",
+      "back_home": "Bumalik sa Santuwaryo",
+      "try_again": "Subukang Muli ang Portal"
+    },
+    "500": {
+      "code": "500",
+      "title": "Katalagman sa Mahika: Error sa Server",
+      "description": "Isang mahiwagang anomalya ang nagpagulo sa aming kaharian. Inaayos na ito ng aming mga salamangkero.",
+      "back_home": "Bumalik sa Kaligtasan",
+      "reload": "Mag-cast ng Recovery Spell"
+    }
+  },
+  "common": {
+    "loading": "Nangangalap ng mahika...",
+    "error": "May naganap na error",
+    "success": "Tagumpay!",
+    "close": "Isara",
+    "save": "I-save",
+    "cancel": "Kanselahin"
+  }
+}
