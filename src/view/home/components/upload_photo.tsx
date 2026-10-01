@@ -57,7 +57,7 @@ export default function UploadPhotoView({
                 disabled:bg-none
                 disabled:bg-white/15
                 disabled:text-white/60
-                bg-[linear-gradient(90deg,#4A04D1_0%,#D434E0_40%,#F6AFBB_100%)]
+                bg-[linear-gradient(92.95deg,_#4A04D1_-22.72%,_#D434E0_28.24%,_#F6AFBB_104.92%)]
               "
         >
           CREATE NOW
