@@ -30,7 +30,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   return (
     <div
       className="
-    max-h-screen
     flex flex-col
     bg-black
         bg-[radial-gradient(circle_at_50%_0%,rgba(164,79,232,0.18)_0%,transparent_45%),radial-gradient(circle_at_50%_100%,rgba(38,0,255,0.16)_0%,transparent_45%)]
@@ -46,7 +45,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="mx-auto flex min-h-dvh w-full max-w-[430px] flex-col">
+      <main className="flex-1 flex flex-col w-full max-w-[430px] mx-auto h-full">
         {children}
       </main>
     </div>

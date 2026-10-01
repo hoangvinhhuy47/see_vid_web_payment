@@ -160,7 +160,7 @@ export default function ShopSection({ email }: { email: string }) {
     : undefined;
 
   return (
-    <section id="shop-section" className="w-full max-w-4xl mx-auto my-10 px-4">
+    <section id="shop-section" className="w-full  mx-auto my-10 px-4">
       {/* 2 Plan Cards (Radio Selection) */}
       <div className="grid grid-row-1  gap-5 mb-8">
         {PRICING_PLANS.map((plan) => {
