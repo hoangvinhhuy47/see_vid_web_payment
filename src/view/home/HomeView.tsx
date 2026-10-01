@@ -5,7 +5,7 @@ import LoveStoryFlow, {
 import UploadPhotoView from "./components/upload_photo";
 import GeneratingVideoView from "./components/creating_video";
 import EmailView from "./components/input_email_create_video";
-import ShopSection from "@/components/stripe/ShopSection";
+import ShopSection from "@/view/home/stripe/ShopSection";
 
 enum CreateVideoStep {
   Welcome = 1,
@@ -16,7 +16,6 @@ enum CreateVideoStep {
 }
 
 export const HomeView: React.FC = () => {
-
   const [step, setStep] = useState<CreateVideoStep>(CreateVideoStep.Welcome);
 
   const [email, setEmail] = useState("");

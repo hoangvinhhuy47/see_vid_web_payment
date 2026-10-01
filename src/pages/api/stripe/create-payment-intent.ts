@@ -27,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } = req.body;
 
     const paymentIntentParams: Stripe.PaymentIntentCreateParams = {
-      amount: Math.round(amount), // in cents: 6900 = $69.00
+      amount: Math.round(amount), 
       currency: currency.toLowerCase(),
       description,
       automatic_payment_methods: {
