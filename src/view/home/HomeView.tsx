@@ -16,7 +16,7 @@ enum CreateVideoStep {
 }
 
 export const HomeView: React.FC = () => {
-  const [step, setStep] = useState<CreateVideoStep>(CreateVideoStep.Welcome);
+  const [step, setStep] = useState<CreateVideoStep>(CreateVideoStep.Shop);
 
   const [email, setEmail] = useState("");
 
@@ -77,13 +77,13 @@ export const HomeView: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center justify-center pt-[20px]">
+    <div className="flex min-h-screen w-full flex-col items-center justify-start pt-6 pb-12">
       <img
         src="/images/img_logo.png"
         alt="Logo"
-        className="h-[30px]"
+        className="h-[32px] w-auto shrink-0 object-contain mb-4"
       />
-      <div className="flex w-full flex-1 flex-col items-center justify-center px-4 pt-[20px]">
+      <div className="flex w-full flex-1 flex-col items-center justify-start px-4">
         {renderStep()}
       </div>
     </div>
