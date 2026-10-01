@@ -95,7 +95,7 @@ export const HomeView: React.FC = () => {
           step === CreateVideoStep.Generating ? "min-h-0 flex-1" : ""
         }`}
       >
-        {renderStep()}
+        {renderStep()} 
       </div>
     </div>
   );
