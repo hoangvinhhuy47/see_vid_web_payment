@@ -50,7 +50,7 @@ export const TestCardHelper: React.FC = () => {
   };
 
   return (
-    <div className="bg-slate-900/90 border border-purple-500/30 rounded-xl p-4 text-xs">
+    <div className="bg-slate-900/90 border border-purple-500/30 rounded-xl p-4 text-xs mt-5">
       <div className="flex items-center gap-2 mb-3 text-purple-300 font-semibold">
         <CreditCard className="w-4 h-4" />
         <span>Stripe Test Mode Simulator (Thẻ Giả Lập)</span>

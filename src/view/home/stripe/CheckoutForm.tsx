@@ -115,7 +115,7 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
       )}
 
       {/* Stripe Payment Element */}
-      <div className="p-4 bg-slate-900/70 border border-slate-700/60 rounded-xl">
+      <div className="p-4 bg-white border border-slate-700/60 rounded-xl">
         <div className="mb-3 flex items-center justify-between text-xs text-slate-400">
           <div className="flex items-center gap-1.5">
             <Lock className="w-3.5 h-3.5 text-emerald-400" />
@@ -169,8 +169,7 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
         </button>
       </div>
 
-      {/* Dev Test Card Simulator Helper */}
-      <TestCardHelper />
+     
     </form>
   );
 };
