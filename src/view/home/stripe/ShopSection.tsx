@@ -19,6 +19,11 @@ export default function ShopSection({ email }: { email: string }) {
   const [customerEmail, setCustomerEmail] = useState<string>("");
   const [currentOrderId, setCurrentOrderId] = useState<string>("");
   const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
+  const [customerId, setCustomerId] = useState<string | null>(null);
+  const [currentPeriodEnd, setCurrentPeriodEnd] = useState<number | null>(null);
+  const [renewalDate, setRenewalDate] = useState<string | null>(null);
+  const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
   const [isLoadingSecret, setIsLoadingSecret] = useState<boolean>(false);
   const [initError, setInitError] = useState<string | null>(null);
 
@@ -31,6 +36,7 @@ export default function ShopSection({ email }: { email: string }) {
     try {
       const res = await fetch("/api/stripe/get-plans");
       const data = await res.json();
+      console.log("Fetched plans from Stripe:", data);
       if (!res.ok)
         throw new Error(data.error || "Không thể tải gói cước từ Stripe.");
       const fetchedPlans: StripePlan[] = data.plans ?? [];
@@ -64,7 +70,7 @@ export default function ShopSection({ email }: { email: string }) {
     setCustomerEmail(email || "");
   }, [email]);
 
-  // ── 2. Create PaymentIntent whenever selected plan changes ────────────────
+  // ── 2. Create Subscription / PaymentIntent whenever selected plan changes ──
   useEffect(() => {
     if (!activePlan) return;
 
@@ -84,11 +90,14 @@ export default function ShopSection({ email }: { email: string }) {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
+            priceId: activePlan.priceId,
+            productId: activePlan.productId,
             amount: activePlan.unitAmount,
             currency: activePlan.currency || "usd",
             description: `Subscription: ${activePlan.productName} ($${priceUSD})`,
             orderId: generatedOrderId,
-            planType: activePlan.interval ?? "one-time",
+            planType: activePlan.interval ?? "week",
+            lookupKey: activePlan.lookupKey ?? undefined,
             customerEmail: customerEmail.trim() || undefined,
           }),
         });
@@ -101,6 +110,16 @@ export default function ShopSection({ email }: { email: string }) {
         }
         if (isMounted) {
           setClientSecret(data.clientSecret);
+          setSubscriptionId(data.subscriptionId ?? null);
+          setCustomerId(data.customerId ?? null);
+          setCurrentPeriodEnd(data.currentPeriodEnd ?? null);
+          setRenewalDate(
+            data.renewalDate ??
+              (data.currentPeriodEnd
+                ? new Date(data.currentPeriodEnd * 1000).toISOString()
+                : null),
+          );
+          setSubscriptionStatus(data.subscriptionStatus ?? null);
           if (data.orderId) setCurrentOrderId(data.orderId);
         }
       } catch (err: any) {
@@ -118,7 +137,7 @@ export default function ShopSection({ email }: { email: string }) {
     return () => {
       isMounted = false;
     };
-  }, [selectedPriceId, activePlan?.unitAmount]);
+  }, [selectedPriceId, activePlan?.unitAmount, activePlan?.priceId]);
 
   const activePlanMeta = activePlan ? getPlanMeta(activePlan) : null;
 
@@ -160,6 +179,11 @@ export default function ShopSection({ email }: { email: string }) {
           activePlan={activePlan}
           priceUSD={activePlanMeta.priceUSD}
           clientSecret={clientSecret}
+          subscriptionId={subscriptionId}
+          customerId={customerId}
+          currentPeriodEnd={currentPeriodEnd}
+          renewalDate={renewalDate}
+          subscriptionStatus={subscriptionStatus}
           orderId={currentOrderId}
           customerEmail={customerEmail}
           isLoading={isLoadingSecret}

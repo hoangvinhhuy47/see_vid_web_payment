@@ -1,14 +1,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { MainLayout } from "@/layouts/MainLayout";
-import {
-  CheckCircle2,
-  ShieldCheck,
-  Sparkles,
-  Copy,
-  Check,
-  Zap,
-} from "lucide-react";
 import Link from "next/link";
 import { ROUTES } from "@/routers/routes";
 import OpenMagicSwapButton from "@/components/OpenMagicSwapButton";

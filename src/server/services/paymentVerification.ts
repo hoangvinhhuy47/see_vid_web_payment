@@ -7,6 +7,11 @@ export interface PaymentVerificationResult {
   isPaid: boolean;
   orderId?: string;
   paymentIntentId?: string;
+  subscriptionId?: string | null;
+  subscriptionStatus?: string | null;
+  currentPeriodStart?: number | null;
+  currentPeriodEnd?: number | null;
+  renewalDate?: string | null;
   status: string;
   amount?: number; // in cents
   amountFormatted?: string;
@@ -57,6 +62,47 @@ export async function verifyPaymentByOrderId(orderId: string): Promise<PaymentVe
 
     const paymentIntent = searchResult.data[0];
     const isPaid = paymentIntent.status === 'succeeded';
+    const piAny = paymentIntent as any;
+
+    // 2. Lấy thông tin Subscription nếu có
+    let subscriptionId = paymentIntent.metadata?.subscriptionId || null;
+    let subscriptionStatus: string | null = null;
+    let currentPeriodStart: number | null = null;
+    let currentPeriodEnd: number | null = null;
+    let renewalDate: string | null = null;
+
+    if (!subscriptionId && piAny.invoice) {
+      try {
+        const invoiceId =
+          typeof piAny.invoice === 'string'
+            ? piAny.invoice
+            : piAny.invoice.id;
+        const invoice: any = await stripe.invoices.retrieve(invoiceId);
+        if (invoice?.subscription) {
+          subscriptionId =
+            typeof invoice.subscription === 'string'
+              ? invoice.subscription
+              : invoice.subscription.id;
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    if (subscriptionId) {
+      try {
+        const subscription: any = await stripe.subscriptions.retrieve(subscriptionId);
+        const item = subscription?.items?.data?.[0];
+        subscriptionStatus = subscription?.status ?? null;
+        currentPeriodStart = item?.current_period_start ?? subscription?.current_period_start ?? null;
+        currentPeriodEnd = item?.current_period_end ?? subscription?.current_period_end ?? null;
+        if (currentPeriodEnd) {
+          renewalDate = new Date(currentPeriodEnd * 1000).toISOString();
+        }
+      } catch {
+        // ignore
+      }
+    }
 
     // Lấy link hóa đơn trực tuyến từ Stripe Charge nếu có
     let receiptUrl: string | null = null;
@@ -68,7 +114,7 @@ export async function verifyPaymentByOrderId(orderId: string): Promise<PaymentVe
             : paymentIntent.latest_charge.id;
         const charge = await stripe.charges.retrieve(chargeId);
         receiptUrl = charge.receipt_url || null;
-      } catch (err) {
+      } catch {
         // ignore charge retrieve error
       }
     }
@@ -82,6 +128,11 @@ export async function verifyPaymentByOrderId(orderId: string): Promise<PaymentVe
       isPaid,
       orderId,
       paymentIntentId: paymentIntent.id,
+      subscriptionId,
+      subscriptionStatus: subscriptionStatus || (isPaid ? 'active' : paymentIntent.status),
+      currentPeriodStart,
+      currentPeriodEnd,
+      renewalDate,
       status: paymentIntent.status,
       amount: paymentIntent.amount,
       amountFormatted,
@@ -129,6 +180,47 @@ export async function verifyPaymentByIntentId(paymentIntentId: string): Promise<
   try {
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
     const isPaid = paymentIntent.status === 'succeeded';
+    const piAny = paymentIntent as any;
+
+    // Lấy thông tin Subscription nếu có
+    let subscriptionId = paymentIntent.metadata?.subscriptionId || null;
+    let subscriptionStatus: string | null = null;
+    let currentPeriodStart: number | null = null;
+    let currentPeriodEnd: number | null = null;
+    let renewalDate: string | null = null;
+
+    if (!subscriptionId && piAny.invoice) {
+      try {
+        const invoiceId =
+          typeof piAny.invoice === 'string'
+            ? piAny.invoice
+            : piAny.invoice.id;
+        const invoice: any = await stripe.invoices.retrieve(invoiceId);
+        if (invoice?.subscription) {
+          subscriptionId =
+            typeof invoice.subscription === 'string'
+              ? invoice.subscription
+              : invoice.subscription.id;
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    if (subscriptionId) {
+      try {
+        const subscription: any = await stripe.subscriptions.retrieve(subscriptionId);
+        const item = subscription?.items?.data?.[0];
+        subscriptionStatus = subscription?.status ?? null;
+        currentPeriodStart = item?.current_period_start ?? subscription?.current_period_start ?? null;
+        currentPeriodEnd = item?.current_period_end ?? subscription?.current_period_end ?? null;
+        if (currentPeriodEnd) {
+          renewalDate = new Date(currentPeriodEnd * 1000).toISOString();
+        }
+      } catch {
+        // ignore
+      }
+    }
 
     let receiptUrl: string | null = null;
     if (paymentIntent.latest_charge) {
@@ -153,6 +245,11 @@ export async function verifyPaymentByIntentId(paymentIntentId: string): Promise<
       isPaid,
       orderId: paymentIntent.metadata?.orderId,
       paymentIntentId: paymentIntent.id,
+      subscriptionId,
+      subscriptionStatus: subscriptionStatus || (isPaid ? 'active' : paymentIntent.status),
+      currentPeriodStart,
+      currentPeriodEnd,
+      renewalDate,
       status: paymentIntent.status,
       amount: paymentIntent.amount,
       amountFormatted,

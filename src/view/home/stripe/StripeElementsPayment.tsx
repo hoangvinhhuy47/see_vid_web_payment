@@ -10,6 +10,11 @@ interface StripeElementsPaymentProps {
   activePlan: StripePlan;
   priceUSD: number;
   clientSecret: string | null;
+  subscriptionId?: string | null;
+  customerId?: string | null;
+  currentPeriodEnd?: number | null;
+  renewalDate?: string | null;
+  subscriptionStatus?: string | null;
   orderId: string;
   customerEmail: string;
   isLoading: boolean;
@@ -50,6 +55,11 @@ export default function StripeElementsPayment({
   activePlan,
   priceUSD,
   clientSecret,
+  subscriptionId,
+  customerId,
+  currentPeriodEnd,
+  renewalDate,
+  subscriptionStatus,
   orderId,
   customerEmail,
   isLoading,
@@ -60,7 +70,7 @@ export default function StripeElementsPayment({
     : undefined;
 
   return (
-    <div className="w-full bg-white border border-purple-300/50 rounded-2xl shadow-lg p-6 md:p-8 relative">
+    <div className="w-full bg-white border border-purple-300/50 rounded-2xl shadow-lg p-4 relative">
       {/* ── Header ── */}
       <div className="flex items-center justify-between pb-4 mb-6 border-b border-purple-200">
         <div className="flex items-center gap-2.5">
@@ -68,18 +78,15 @@ export default function StripeElementsPayment({
             <CreditCard className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-slate-800">
+            <h3 className="text-[13px] font-bold text-slate-800">
               Thanh Toán Trực Tiếp:{" "}
               <span className="text-purple-600">{activePlan.productName}</span>{" "}
-              (${priceUSD.toFixed(2)})
+              {priceUSD.toFixed(2)} {activePlan.currency.toUpperCase()}
             </h3>
             <p className="text-xs text-slate-500">
               Form Stripe Elements tích hợp trực tiếp
             </p>
           </div>
-        </div>
-        <div className="px-3 py-1 bg-emerald-50 border border-emerald-300 rounded-lg text-emerald-600 text-xs font-semibold">
-          ${priceUSD.toFixed(2)} {activePlan.currency.toUpperCase()}
         </div>
       </div>
 
@@ -99,17 +106,11 @@ export default function StripeElementsPayment({
           <div className="flex items-start gap-2.5 text-rose-600">
             <AlertCircle className="w-5 h-5 shrink-0 text-rose-500 mt-0.5" />
             <div>
-              <p className="text-sm font-semibold">Chưa thể tải Stripe Elements</p>
+              <p className="text-sm font-semibold">
+                Chưa thể tải Stripe Elements
+              </p>
               <p className="text-xs text-rose-500/80 mt-1">{error}</p>
             </div>
-          </div>
-          <div className="bg-slate-50 p-3 rounded-lg text-xs font-mono text-purple-700 border border-slate-200">
-            💡 <strong>Hướng dẫn:</strong> Điền khóa test vào file{" "}
-            <span className="text-amber-600">.env.dev</span>:
-            <div className="mt-1 text-slate-500">
-              NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
-            </div>
-            <div className="text-slate-500">STRIPE_SECRET_KEY=sk_test_...</div>
           </div>
         </div>
       )}
@@ -123,6 +124,15 @@ export default function StripeElementsPayment({
             itemName={activePlan.productName}
             orderId={orderId}
             customerEmail={customerEmail}
+            lookupKey={activePlan.lookupKey}
+            priceId={activePlan.priceId}
+            productId={activePlan.productId}
+            interval={activePlan.interval}
+            subscriptionId={subscriptionId}
+            customerId={customerId}
+            currentPeriodEnd={currentPeriodEnd}
+            renewalDate={renewalDate}
+            subscriptionStatus={subscriptionStatus}
           />
         </Elements>
       )}

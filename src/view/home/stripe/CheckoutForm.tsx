@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
 import { Lock, Loader2, AlertCircle, Mail, Hash } from 'lucide-react';
 import { TestCardHelper } from './TestCardHelper';
+import { savePaymentToFirestore } from '@/utils/savePayment';
 
 interface CheckoutFormProps {
   amount: number; // in cents
@@ -9,6 +10,15 @@ interface CheckoutFormProps {
   itemName: string;
   orderId?: string;
   customerEmail?: string;
+  lookupKey?: string | null; // Stripe Price Lookup Key
+  priceId?: string | null;
+  productId?: string | null;
+  interval?: "week" | "month" | "year" | "day" | null;
+  subscriptionId?: string | null;
+  customerId?: string | null;
+  currentPeriodEnd?: number | null;
+  renewalDate?: string | null;
+  subscriptionStatus?: string | null;
   onSuccess?: (paymentIntentId: string, orderId?: string) => void;
   onCancel?: () => void;
 }
@@ -19,6 +29,15 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
   itemName,
   orderId,
   customerEmail,
+  lookupKey,
+  priceId,
+  productId,
+  interval,
+  subscriptionId,
+  customerId,
+  currentPeriodEnd,
+  renewalDate,
+  subscriptionStatus,
   onSuccess,
   onCancel,
 }) => {
@@ -62,14 +81,57 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
         setErrorMessage(result.error.message || 'Thanh toán thất bại, vui lòng kiểm tra lại.');
         setIsProcessing(false);
       } else if (result.paymentIntent && result.paymentIntent.status === 'succeeded') {
+        // ── Lưu thông tin subscription lên Firestore ─────────────────────────
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const intent = result.paymentIntent;
+        const intentAny = intent as any;
+        const paidAtTimestamp = intentAny?.created ?? Math.floor(Date.now() / 1000);
+
+        // Tính ngày gia hạn (currentPeriodEnd & renewalDate)
+        let periodEndTimestamp: number = currentPeriodEnd ?? 0;
+        if (!periodEndTimestamp) {
+          if (interval === 'year') {
+            periodEndTimestamp = paidAtTimestamp + 365 * 24 * 3600;
+          } else if (interval === 'month') {
+            periodEndTimestamp = paidAtTimestamp + 30 * 24 * 3600;
+          } else {
+            periodEndTimestamp = paidAtTimestamp + 7 * 24 * 3600; // default week
+          }
+        }
+
+        const renewalDateStr =
+          renewalDate || new Date(periodEndTimestamp * 1000).toISOString();
+
+        await savePaymentToFirestore({
+          orderId: orderId || intent.id,
+          paymentIntentId: intent.id,
+          subscriptionId: subscriptionId || intentAny?.metadata?.subscriptionId || null,
+          customerId: customerId || intentAny?.customer || null,
+          customerEmail: customerEmail || intent.receipt_email || null,
+          status: 'active', // Trạng thái subscription đã kích hoạt
+          subscriptionStatus: 'active', // Trạng thái gói: active
+          isPaid: true,
+          amount: intent.amount,
+          currency: intent.currency,
+          planType: intentAny?.metadata?.planType || interval || 'week',
+          productId: lookupKey || productId || intentAny?.metadata?.productId || 'null',
+          priceId: priceId || intentAny?.metadata?.priceId || null,
+          lookupKey: lookupKey || intentAny?.metadata?.lookupKey || null,
+          paidAt: paidAtTimestamp,
+          currentPeriodStart: paidAtTimestamp,
+          currentPeriodEnd: periodEndTimestamp, // Ngày gia hạn (timestamp seconds)
+          renewalDate: renewalDateStr, // Ngày gia hạn (ISO String)
+          isActivated: false,
+          activatedAt: null,
+        });
         setIsProcessing(false);
         if (onSuccess) {
-          onSuccess(result.paymentIntent.id, orderId);
+          onSuccess(intent.id, orderId);
         } else {
           // Chuyển hướng sang màn hình thông báo thành công và Download App
           window.location.href = `/payment/success?order_id=${encodeURIComponent(
             orderId || ''
-          )}&payment_intent=${encodeURIComponent(result.paymentIntent.id)}`;
+          )}&payment_intent=${encodeURIComponent(intent.id)}`;
         }
       } else {
         setIsProcessing(false);
@@ -94,7 +156,7 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
           {orderId && (
             <div className="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
               <Hash className="w-3 h-3 text-purple-400" />
-              <span>Mã Đơn: </span>
+              <span className='text-white'>Mã Đơn: </span>
               <span className="font-mono text-purple-200">{orderId}</span>
             </div>
           )}
@@ -125,7 +187,8 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
         </div>
         <PaymentElement
           options={{
-            layout: 'tabs',
+            layout: 'accordion',
+            
           }}
         />
       </div>

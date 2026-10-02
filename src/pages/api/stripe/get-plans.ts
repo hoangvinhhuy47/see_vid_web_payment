@@ -20,6 +20,7 @@ export interface StripePlan {
   interval: 'week' | 'month' | 'year' | 'day' | null; // recurring interval
   intervalCount: number | null;
   nickname: string | null;
+  lookupKey: string | null; // Stripe Lookup Key (e.g. "standard_monthly")
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -64,6 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           interval,
           intervalCount: price.recurring?.interval_count ?? null,
           nickname: price.nickname,
+          lookupKey: price.lookup_key ?? null,
         });
       }
     }

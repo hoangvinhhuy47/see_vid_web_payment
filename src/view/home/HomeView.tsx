@@ -17,7 +17,7 @@ enum CreateVideoStep {
 }
 
 export const HomeView: React.FC<{ previews?: VideoPreview[] }> = ({ previews }) => {
-  const [step, setStep] = useState<CreateVideoStep>(CreateVideoStep.Welcome);
+  const [step, setStep] = useState<CreateVideoStep>(CreateVideoStep.Shop);
 
   const [email, setEmail] = useState("");
   const [, setStoryAnswers] = useState<LoveStoryAnswers | null>(null);

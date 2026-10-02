@@ -1,5 +1,6 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAnalytics, isSupported } from "firebase/analytics";
+import { initializeFirestore, getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -18,4 +19,11 @@ const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const analyticsPromise =
   typeof window !== "undefined" ? isSupported().then((ok) => (ok ? getAnalytics(app) : null)) : Promise.resolve(null);
 
-export { app, analyticsPromise };
+// Firestore — bỏ qua các field undefined thay vì throw lỗi invalid-argument
+const db = getApps().length > 1
+  ? getFirestore(app)
+  : initializeFirestore(app, {
+      ignoreUndefinedProperties: true,
+    });
+
+export { app, analyticsPromise, db };
