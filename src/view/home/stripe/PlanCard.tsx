@@ -39,7 +39,7 @@ export function getPlanMeta(plan: StripePlan) {
     perWeekEquivalent = `~$${perWeek.toFixed(2)} / week`;
   }
 
-  return { priceUSD, periodLabel, badge, perWeekEquivalent, isYearly };
+  return { priceUSD, periodLabel, badge, perWeekEquivalent, isYearly,planDescription: plan.productDescription };
 }
 
 // ─── Skeleton Card ────────────────────────────────────────────────────────────
@@ -162,12 +162,20 @@ export default function PlanCards({
                 </div>
 
                 {/* Price */}
-                <div className="text-right shrink-0 ml-3">
+                <div className="text-right shrink-0 ml-3 flex flex-col ">
                   <div className="text-2xl font-black text-white">
                     ${meta.priceUSD.toFixed(2)}
                     <span className="text-xs font-normal text-slate-400 ml-1">
                       {meta.periodLabel}
                     </span>
+                  </div>
+                  <div className="text-white text-[12px] uppercase flex gap-[2px] items-center justify-center bg-[#BB31D652] rounded-full px-2 py-[1px] border border-[#E393C6BD]">
+                    <img
+                      src="/icons/ic_credit.png"
+                      alt="Logo"
+                      className="h-[15px] w-auto shrink-0 object-contain"
+                    />
+                    {meta.planDescription || ''}
                   </div>
                 </div>
               </div>

@@ -9,4 +9,5 @@ export interface StripePlan {
   interval: "week" | "month" | "year" | "day" | null;
   intervalCount: number | null;
   nickname: string | null;
+  lookupKey: string | null; 
 }
