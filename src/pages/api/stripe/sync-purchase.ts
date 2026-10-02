@@ -250,7 +250,7 @@ export default async function handler(
     // 5. Đồng bộ Firestore bằng transaction (Chống Race Condition)
     const result = await runTransaction(db, async (tx) => {
       const purchaseRefs = verified.map((item) =>
-        doc(db, "purchase", `stripe_${item.data.orderId}`)
+        doc(db, "purchases", `stripe_${item.data.orderId}`)
       );
 
       const latestPayments = await Promise.all(
@@ -315,20 +315,15 @@ export default async function handler(
         }
 
         const purchasePayload = {
-          deviceId,
+          deviceId: deviceId,
           expiryDate: Timestamp.fromMillis(item.expiryMs),
           iapSource: "stripe",
           orderId: latest.orderId,
-          purchaseDate,
+          purchaseDate: purchaseDate,
           status: item.subscription.status,
           productId: latest.lookupKey ?? latest.productId ?? "subscription",
           type: "subscription",
-          userId,
-          subscriptionId: item.subscription.id,
-          priceId: item.data.priceId ?? null,
-          isActive: item.isActive,
-          isExpired: item.isExpired,
-          syncedAt: serverTimestamp(),
+          userId: userId,
         };
 
         // Ghi vào collection `purchase`
@@ -372,7 +367,7 @@ export default async function handler(
     // 6. Đọc purchase từ Firestore sau khi cập nhật
     const purchaseSnapshots = await Promise.all(
       result.map((item) =>
-        getDoc(doc(db, "purchase", `stripe_${item.orderId}`))
+        getDoc(doc(db, "purchases", `stripe_${item.orderId}`))
       )
     );
 
