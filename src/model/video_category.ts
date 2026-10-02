@@ -2,6 +2,7 @@ export interface VideoPreview {
   id: string;
   caption: string;
   videoUrl: string;
+  thumbnailUrl?: string;
 }
 
 export interface VideoCategory {
