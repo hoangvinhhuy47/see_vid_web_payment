@@ -22,7 +22,8 @@ export default function EmailView({ onComplete }: EmailViewProps) {
   };
 
   return (
-    <div className="flex h-full min-h-0 w-full flex-col overflow-hidden text-white">
+    <div className="flex min-h-0 w-full flex-1 flex-col text-white">
+      <div className="min-h-0 flex-1 overflow-y-auto">
       {/* Title */}
       <h1 className="text-2xl font-bold text-center">
         Enter your email to get your video
@@ -41,22 +42,7 @@ export default function EmailView({ onComplete }: EmailViewProps) {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Your Email"
           autoComplete="email"
-          className="
-                w-full
-                rounded-xl
-                border
-                border-white/15
-                bg-white/30
-                px-4
-                py-4
-                text-base
-                text-white
-                outline-none
-                placeholder:text-white/30
-                transition
-                focus:border-white/50
-                focus:bg-white/10
-              "
+          className="w-full rounded-xl border border-transparent bg-[#494949] px-4 py-3 text-base text-white placeholder:text-[#c7c2c7] focus:border-fuchsia-400 focus:outline-none"
         />
 
         {/* Verify email */}
@@ -71,22 +57,25 @@ export default function EmailView({ onComplete }: EmailViewProps) {
         )}
       </div>
 
+      </div>
+
       {/* Continue */}
-      <div className="shrink-0">
+      <div className="shrink-0 mt-auto">
         <button
           onClick={handleContinue}
           type="button"
           disabled={!isValidEmail}
-          className={` w-full rounded-full
-                px-6 py-3
-                text-xl font-semibold text-white
+          className="
+                mt-4 min-h-[45px] w-full shrink-0 rounded-full
+                px-2 py-2 text-lg font-semibold
                 transition-all
                 active:scale-[0.98]
                 disabled:cursor-not-allowed
                 disabled:bg-none
                 disabled:bg-white/15
                 disabled:text-white/60
-                bg-[linear-gradient(92.95deg,_#4A04D1_-22.72%,_#D434E0_28.24%,_#F6AFBB_104.92%)]`}
+                bg-[linear-gradient(92.95deg,_#4A04D1_-22.72%,_#D434E0_28.24%,_#F6AFBB_104.92%)]
+              "
         >
           CONTINUE
         </button>

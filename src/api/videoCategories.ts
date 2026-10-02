@@ -4,10 +4,12 @@ import { isVideoCategoryId, VideoCategory } from '@/model/video_category';
 
 const DATA_URL = 'https://aistudio.picify.net/data/home.videoai.json';
 const VIDEO_URL = 'https://aistudio.picify.net/images';
-const cacheKey = (categoryId: string) => `seevid:video-effects:v2:${categoryId}`;
+const cacheKey = (categoryId: string) => `seevid:video-effects:v3:${categoryId}`;
+const isThumbnailFilename = (value: unknown): value is string =>
+  typeof value === 'string' && /^\d+(?:_\d+)?\.(?:jpg|jpeg|png|webp)$/.test(value);
 
 type SourceCategory = { c?: unknown; n?: unknown; ct?: unknown; ts?: unknown };
-type SourceVideo = { id?: unknown; model?: unknown; title?: unknown };
+type SourceVideo = { id?: unknown; model?: unknown; title?: unknown; thumb_450x800?: unknown };
 
 export function parseVideoCategories(payload: unknown): VideoCategory[] {
   const categories = (payload as { homeData?: { cg?: unknown } } | null)?.homeData?.cg;
@@ -28,6 +30,9 @@ export function parseVideoCategories(payload: unknown): VideoCategory[] {
         id,
         caption: typeof video.title === 'string' ? video.title : 'Create your video with AI.',
         videoUrl: `${VIDEO_URL}/${id}/thumb_450x800/${id}.mp4`,
+        ...(isThumbnailFilename(video.thumb_450x800) ? {
+          thumbnailUrl: `${VIDEO_URL}/${id}/thumb_450x800/${video.thumb_450x800}`,
+        } : {}),
       }];
     });
     return {
@@ -44,6 +49,9 @@ function isCachedCategory(value: unknown, categoryId: string): value is VideoCat
     && typeof category.name === 'string' && Array.isArray(category.videos)
     && category.videos.every((video) => video && /^\d+$/.test(video.id)
       && typeof video.caption === 'string'
+      && (video.thumbnailUrl === undefined || (typeof video.thumbnailUrl === 'string'
+        && video.thumbnailUrl.startsWith(`${VIDEO_URL}/${video.id}/thumb_450x800/`)
+        && isThumbnailFilename(video.thumbnailUrl.slice(`${VIDEO_URL}/${video.id}/thumb_450x800/`.length))))
       && video.videoUrl === `${VIDEO_URL}/${video.id}/thumb_450x800/${video.id}.mp4`);
 }
 

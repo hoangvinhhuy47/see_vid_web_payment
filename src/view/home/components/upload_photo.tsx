@@ -15,7 +15,8 @@ export default function UploadPhotoView({
   const canContinue = hasFirstPhoto && (!isTwoPhotos || hasSecondPhoto);
 
   return (
-    <div className="w-full text-white">
+    <div className="flex min-h-0 w-full flex-1 flex-col text-white">
+      <div className="min-h-0 flex-1 overflow-y-auto">
       <div className="pb-6">
         <h1 className="text-2xl font-bold  text-center">
           {isTwoPhotos
@@ -42,15 +43,16 @@ export default function UploadPhotoView({
         )}
       </div>
 
-      <div className="mt-auto shrink-0 pt-10">
+      </div>
+
+      <div className="mt-auto shrink-0">
         <button
           onClick={onContinue}
           type="button"
           disabled={!canContinue}
           className="
-                w-full rounded-full
-                px-6 py-3
-                text-xl font-semibold text-white
+                mt-4 min-h-[45px] w-full shrink-0 rounded-full
+                px-2 py-2 text-lg font-semibold
                 transition-all
                 active:scale-[0.98]
                 disabled:cursor-not-allowed

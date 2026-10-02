@@ -78,7 +78,7 @@ export const HomeView: React.FC<{ previews?: VideoPreview[] }> = ({ previews }) 
   return (
     <div
       className={`flex flex-col items-center justify-start py-6 ${
-        step === CreateVideoStep.Generating || step === CreateVideoStep.UploadPhoto
+        step === CreateVideoStep.Generating || step === CreateVideoStep.UploadPhoto || step === CreateVideoStep.Email
           ? "h-dvh overflow-hidden "
           : ""
       }`}
@@ -94,7 +94,9 @@ export const HomeView: React.FC<{ previews?: VideoPreview[] }> = ({ previews }) 
 
       <div
         className={`flex w-full flex-col items-center justify-start px-4 ${
-          step === CreateVideoStep.Generating ? "min-h-0 flex-1" : ""
+          step === CreateVideoStep.Generating || step === CreateVideoStep.UploadPhoto || step === CreateVideoStep.Email
+            ? "min-h-0 flex-1"
+            : ""
         }`}
       >
         {renderStep()}
