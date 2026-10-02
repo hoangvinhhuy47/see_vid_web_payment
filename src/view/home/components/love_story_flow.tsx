@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { Check } from "lucide-react";
 import LoveStoryVideoPreview from "./love_story_video_preview";
 
-const previews = [
+const defaultPreviews = [
   { id: "290025", caption: "Turn your love into unforgettable moments." },
   { id: "290006", caption: "Create your dream couple video with AI." },
   {
@@ -36,31 +36,27 @@ export interface LoveStoryAnswers {
 
 interface LoveStoryFlowProps {
   onComplete: (answers: LoveStoryAnswers) => void;
-}
-
-enum LoveStoryStep {
-  FirstVideo = 0,
-  SecondVideo = 1,
-  ThirdVideo = 2,
-  Recipient = 3,
-  Message = 4,
-  Mood = 5,
+  previews?: { id: string; caption: string; videoUrl?: string }[];
 }
 
 export default function LoveStoryFlow({
   onComplete,
+  previews = defaultPreviews,
 }: LoveStoryFlowProps) {
-  const [step, setStep] = useState<LoveStoryStep>(LoveStoryStep.FirstVideo);
+  const [step, setStep] = useState(0);
+  const recipientStep = previews.length;
+  const messageStep = recipientStep + 1;
+  const moodStep = recipientStep + 2;
   const [recipient, setRecipient] = useState(0);
   const [message, setMessage] = useState("");
   const [mood, setMood] = useState(0);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const isPreview = step < previews.length;
-  const options = step === LoveStoryStep.Recipient ? recipients : moods;
-  const selected = step === LoveStoryStep.Recipient ? recipient : mood;
+  const options = step === recipientStep ? recipients : moods;
+  const selected = step === recipientStep ? recipient : mood;
 
   const handleContinue = () => {
-    if (step === LoveStoryStep.Mood) {
+    if (step === moodStep) {
       onComplete({
         recipient: recipients[recipient],
         message: message.trim(),
@@ -82,7 +78,7 @@ export default function LoveStoryFlow({
         />
       </header>
       <section
-        aria-label={`Step ${step + 1} of 6`}
+        aria-label={`Step ${step + 1} of ${previews.length + 3}`}
         className="flex min-h-0 flex-1 flex-col"
       >
         {isPreview ? (
@@ -94,13 +90,13 @@ export default function LoveStoryFlow({
               tabIndex={-1}
               className="mb-[clamp(24px,5dvh,48px)] mt-2 text-center text-[clamp(20px,2.7dvh,24px)] font-semibold leading-tight outline-none"
             >
-              {step === LoveStoryStep.Recipient
+              {step === recipientStep
                 ? "Who is this love video for?"
-                : step === LoveStoryStep.Message
+                : step === messageStep
                   ? "What would you like to say to your special someone?"
                   : "How do you want your love story to feel?"}
             </h1>
-            {step === LoveStoryStep.Message ? (
+            {step === messageStep ? (
               <div>
                 <label
                   htmlFor="love-message"
@@ -120,7 +116,7 @@ export default function LoveStoryFlow({
             ) : (
               <div
                 role="group"
-                aria-label={step === LoveStoryStep.Recipient ? "Choose recipient" : "Choose mood"}
+                aria-label={step === recipientStep ? "Choose recipient" : "Choose mood"}
                 className="flex flex-col gap-[clamp(12px,2.4dvh,20px)]"
               >
                 {options.map((option, index) => (
@@ -129,7 +125,7 @@ export default function LoveStoryFlow({
                     type="button"
                     aria-pressed={selected === index}
                     onClick={() =>
-                      step === LoveStoryStep.Recipient ? setRecipient(index) : setMood(index)
+                      step === recipientStep ? setRecipient(index) : setMood(index)
                     }
                     className={`relative min-h-11 w-full rounded-full border px-10 py-2 text-center text-base font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${selected === index ? "border-white bg-[#d532d2] ring-1 ring-white" : "border-fuchsia-400 bg-[#241522] hover:bg-[#392039]"}`}
                   >

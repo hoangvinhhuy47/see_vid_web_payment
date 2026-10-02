@@ -6,6 +6,7 @@ import UploadPhotoView from "./components/upload_photo";
 import GeneratingVideoView from "./components/creating_video";
 import EmailView from "./components/input_email_create_video";
 import ShopSection from "@/view/home/stripe/ShopSection";
+import type { VideoPreview } from "@/model/video_category";
 
 enum CreateVideoStep {
   Welcome = 1,
@@ -15,7 +16,7 @@ enum CreateVideoStep {
   Shop = 6,
 }
 
-export const HomeView: React.FC = () => {
+export const HomeView: React.FC<{ previews?: VideoPreview[] }> = ({ previews }) => {
   const [step, setStep] = useState<CreateVideoStep>(CreateVideoStep.Welcome);
 
   const [email, setEmail] = useState("");
@@ -26,6 +27,7 @@ export const HomeView: React.FC = () => {
       case CreateVideoStep.Welcome:
         return (
           <LoveStoryFlow
+            previews={previews}
             onComplete={(answers) => {
               setStoryAnswers(answers);
               setStep(CreateVideoStep.UploadPhoto);
@@ -76,7 +78,7 @@ export const HomeView: React.FC = () => {
   return (
     <div
       className={`flex flex-col items-center justify-start py-6 ${
-        step === CreateVideoStep.Generating || step === CreateVideoStep.UploadPhoto
+        step === CreateVideoStep.Generating || step === CreateVideoStep.UploadPhoto || step === CreateVideoStep.Email
           ? "h-dvh overflow-hidden "
           : ""
       }`}
@@ -92,7 +94,9 @@ export const HomeView: React.FC = () => {
 
       <div
         className={`flex w-full flex-col items-center justify-start px-4 ${
-          step === CreateVideoStep.Generating ? "min-h-0 flex-1" : ""
+          step === CreateVideoStep.Generating || step === CreateVideoStep.UploadPhoto || step === CreateVideoStep.Email
+            ? "min-h-0 flex-1"
+            : ""
         }`}
       >
         {renderStep()} 
