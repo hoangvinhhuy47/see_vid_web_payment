@@ -13,6 +13,7 @@ interface StripeElementsPaymentProps {
   subscriptionId?: string | null;
   customerId?: string | null;
   currentPeriodEnd?: number | null;
+  renewalDate?: string | null;
   subscriptionStatus?: string | null;
   orderId: string;
   customerEmail: string;
@@ -57,6 +58,7 @@ export default function StripeElementsPayment({
   subscriptionId,
   customerId,
   currentPeriodEnd,
+  renewalDate,
   subscriptionStatus,
   orderId,
   customerEmail,
@@ -129,6 +131,7 @@ export default function StripeElementsPayment({
             subscriptionId={subscriptionId}
             customerId={customerId}
             currentPeriodEnd={currentPeriodEnd}
+            renewalDate={renewalDate}
             subscriptionStatus={subscriptionStatus}
           />
         </Elements>

@@ -68,6 +68,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         payment_behavior: 'default_incomplete',
         payment_settings: {
           save_default_payment_method: 'on_subscription',
+          payment_method_types: ['card'],
         },
         expand: ['latest_invoice.payment_intent'],
         metadata: {
@@ -88,7 +89,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (typeof invoice.payment_intent === 'object' && invoice.payment_intent) {
           paymentIntent = invoice.payment_intent as Stripe.PaymentIntent;
         } else if (typeof invoice.payment_intent === 'string') {
-          paymentIntent = await stripe.paymentIntents.retrieve(invoice.payment_intent);
+          try {
+            paymentIntent = await stripe.paymentIntents.retrieve(invoice.payment_intent);
+          } catch {
+            // ignore
+          }
+        }
+      }
+
+      // Fallback: Nếu Stripe SDK v22 không trả payment_intent trực tiếp trên invoice, lấy qua customer
+      if (!paymentIntent || !paymentIntent.client_secret) {
+        const piList = await stripe.paymentIntents.list({
+          customer: customer.id,
+          limit: 1,
+        });
+        if (piList.data.length > 0) {
+          paymentIntent = piList.data[0];
         }
       }
 
@@ -96,23 +112,48 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         throw new Error('Không thể khởi tạo PaymentIntent cho gói đăng ký.');
       }
 
-      // Cập nhật metadata cho PaymentIntent để dễ tìm kiếm và gửi receipt
-      await stripe.paymentIntents.update(paymentIntent.id, {
-        description: description || `Subscription: ${planType}`,
-        metadata: {
-          orderId,
-          subscriptionId: subscription.id,
-          priceId,
-          productId: productId ?? '',
-          planType,
-          lookupKey: lookupKey ?? '',
-          customerEmail: trimmedEmail || 'unspecified',
-          environment: process.env.NEXT_PUBLIC_APP_ENV || 'development',
-        },
-        ...(trimmedEmail ? { receipt_email: trimmedEmail } : {}),
-      });
+      // Cập nhật metadata cho PaymentIntent
+      try {
+        await stripe.paymentIntents.update(paymentIntent.id, {
+          metadata: {
+            orderId,
+            subscriptionId: subscription.id,
+            priceId,
+            productId: productId ?? '',
+            planType,
+            lookupKey: lookupKey ?? '',
+            customerEmail: trimmedEmail || 'unspecified',
+            environment: process.env.NEXT_PUBLIC_APP_ENV || 'development',
+          },
+        });
+      } catch (updateErr) {
+        console.warn('Could not update paymentIntent metadata:', updateErr);
+      }
 
       const subAny = subscription as any;
+      const firstItem = subAny.items?.data?.[0];
+      const currentPeriodStart: number =
+        firstItem?.current_period_start ??
+        subAny.current_period_start ??
+        Math.floor(Date.now() / 1000);
+
+      let currentPeriodEnd: number =
+        firstItem?.current_period_end ??
+        subAny.current_period_end ??
+        0;
+
+      if (!currentPeriodEnd) {
+        if (planType === 'year') {
+          currentPeriodEnd = currentPeriodStart + 365 * 24 * 3600;
+        } else if (planType === 'month') {
+          currentPeriodEnd = currentPeriodStart + 30 * 24 * 3600;
+        } else {
+          currentPeriodEnd = currentPeriodStart + 7 * 24 * 3600; // default week
+        }
+      }
+
+      const renewalDate = new Date(currentPeriodEnd * 1000).toISOString();
+
       return res.status(200).json({
         clientSecret: paymentIntent.client_secret,
         paymentIntentId: paymentIntent.id,
@@ -121,8 +162,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         orderId,
         amount: paymentIntent.amount,
         currency: paymentIntent.currency,
-        currentPeriodStart: subAny.current_period_start ?? null,
-        currentPeriodEnd: subAny.current_period_end ?? null,
+        currentPeriodStart,
+        currentPeriodEnd,
+        renewalDate,
         subscriptionStatus: subscription.status,
       });
     }

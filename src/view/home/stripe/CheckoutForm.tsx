@@ -17,6 +17,7 @@ interface CheckoutFormProps {
   subscriptionId?: string | null;
   customerId?: string | null;
   currentPeriodEnd?: number | null;
+  renewalDate?: string | null;
   subscriptionStatus?: string | null;
   onSuccess?: (paymentIntentId: string, orderId?: string) => void;
   onCancel?: () => void;
@@ -35,6 +36,7 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
   subscriptionId,
   customerId,
   currentPeriodEnd,
+  renewalDate,
   subscriptionStatus,
   onSuccess,
   onCancel,
@@ -85,7 +87,7 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
         const intentAny = intent as any;
         const paidAtTimestamp = intentAny?.created ?? Math.floor(Date.now() / 1000);
 
-        // Tính ngày gia hạn (currentPeriodEnd) nếu chưa có từ Stripe
+        // Tính ngày gia hạn (currentPeriodEnd & renewalDate)
         let periodEndTimestamp: number = currentPeriodEnd ?? 0;
         if (!periodEndTimestamp) {
           if (interval === 'year') {
@@ -97,7 +99,8 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
           }
         }
 
-        const renewalDateStr = new Date(periodEndTimestamp * 1000).toISOString();
+        const renewalDateStr =
+          renewalDate || new Date(periodEndTimestamp * 1000).toISOString();
 
         await savePaymentToFirestore({
           orderId: orderId || intent.id,
@@ -118,7 +121,6 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
           currentPeriodStart: paidAtTimestamp,
           currentPeriodEnd: periodEndTimestamp, // Ngày gia hạn (timestamp seconds)
           renewalDate: renewalDateStr, // Ngày gia hạn (ISO String)
-          environment: process.env.NEXT_PUBLIC_APP_ENV || 'production',
           isActivated: false,
           activatedAt: null,
         });

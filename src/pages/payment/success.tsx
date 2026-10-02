@@ -1,18 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { MainLayout } from "@/layouts/MainLayout";
-import {
-  CheckCircle2,
-  ShieldCheck,
-  Sparkles,
-  Copy,
-  Check,
-  Zap,
-} from "lucide-react";
 import Link from "next/link";
 import { ROUTES } from "@/routers/routes";
 import OpenMagicSwapButton from "@/components/OpenMagicSwapButton";
-import { savePaymentToFirestore } from "@/utils/savePayment";
 
 export default function PaymentSuccessPage() {
   const router = useRouter();
@@ -31,56 +22,6 @@ export default function PaymentSuccessPage() {
     (payment_intent as string) ||
     (payment_intent_client_secret as string) ||
     "";
-
-  // Sync / verify payment & update Firestore if user arrived via redirect
-  useEffect(() => {
-    if (!activeOrderId && !activeIntentId) return;
-
-    const syncPayment = async () => {
-      try {
-        const query = activeOrderId
-          ? `orderId=${encodeURIComponent(activeOrderId)}`
-          : `paymentIntentId=${encodeURIComponent(activeIntentId)}`;
-        const res = await fetch(`/api/stripe/verify-order?${query}`);
-        if (!res.ok) return;
-        const data = await res.json();
-        if (data.isPaid) {
-          const paidAt = data.paidAt || Math.floor(Date.now() / 1000);
-          await savePaymentToFirestore({
-            orderId: activeOrderId || data.orderId || activeIntentId,
-            paymentIntentId: data.paymentIntentId || activeIntentId,
-            subscriptionId: data.subscriptionId || data.metadata?.subscriptionId || null,
-            customerId: data.metadata?.customerId || null,
-            customerEmail: data.customerEmail || null,
-            status: data.subscriptionStatus || 'active',
-            subscriptionStatus: data.subscriptionStatus || 'active',
-            isPaid: true,
-            amount: data.amount || 0,
-            currency: data.currency || 'usd',
-            planType: data.metadata?.planType || 'subscription',
-            productId: data.metadata?.lookupKey || data.metadata?.productId || 'null',
-            priceId: data.metadata?.priceId || null,
-            lookupKey: data.metadata?.lookupKey || null,
-            paidAt,
-            currentPeriodStart: data.currentPeriodStart || paidAt,
-            currentPeriodEnd: data.currentPeriodEnd || null,
-            renewalDate:
-              data.renewalDate ||
-              (data.currentPeriodEnd
-                ? new Date(data.currentPeriodEnd * 1000).toISOString()
-                : null),
-            environment: process.env.NEXT_PUBLIC_APP_ENV || 'production',
-            isActivated: false,
-            activatedAt: null,
-          });
-        }
-      } catch (err) {
-        console.error("Error syncing payment on success page:", err);
-      }
-    };
-
-    syncPayment();
-  }, [activeOrderId, activeIntentId]);
 
   const handleCopyOrderId = () => {
     const idToCopy = activeOrderId || activeIntentId;

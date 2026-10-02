@@ -92,9 +92,10 @@ export async function verifyPaymentByOrderId(orderId: string): Promise<PaymentVe
     if (subscriptionId) {
       try {
         const subscription: any = await stripe.subscriptions.retrieve(subscriptionId);
+        const item = subscription?.items?.data?.[0];
         subscriptionStatus = subscription?.status ?? null;
-        currentPeriodStart = subscription?.current_period_start ?? null;
-        currentPeriodEnd = subscription?.current_period_end ?? null;
+        currentPeriodStart = item?.current_period_start ?? subscription?.current_period_start ?? null;
+        currentPeriodEnd = item?.current_period_end ?? subscription?.current_period_end ?? null;
         if (currentPeriodEnd) {
           renewalDate = new Date(currentPeriodEnd * 1000).toISOString();
         }
@@ -209,9 +210,10 @@ export async function verifyPaymentByIntentId(paymentIntentId: string): Promise<
     if (subscriptionId) {
       try {
         const subscription: any = await stripe.subscriptions.retrieve(subscriptionId);
+        const item = subscription?.items?.data?.[0];
         subscriptionStatus = subscription?.status ?? null;
-        currentPeriodStart = subscription?.current_period_start ?? null;
-        currentPeriodEnd = subscription?.current_period_end ?? null;
+        currentPeriodStart = item?.current_period_start ?? subscription?.current_period_start ?? null;
+        currentPeriodEnd = item?.current_period_end ?? subscription?.current_period_end ?? null;
         if (currentPeriodEnd) {
           renewalDate = new Date(currentPeriodEnd * 1000).toISOString();
         }

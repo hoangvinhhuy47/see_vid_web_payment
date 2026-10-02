@@ -22,6 +22,7 @@ export default function ShopSection({ email }: { email: string }) {
   const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
   const [customerId, setCustomerId] = useState<string | null>(null);
   const [currentPeriodEnd, setCurrentPeriodEnd] = useState<number | null>(null);
+  const [renewalDate, setRenewalDate] = useState<string | null>(null);
   const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
   const [isLoadingSecret, setIsLoadingSecret] = useState<boolean>(false);
   const [initError, setInitError] = useState<string | null>(null);
@@ -112,6 +113,12 @@ export default function ShopSection({ email }: { email: string }) {
           setSubscriptionId(data.subscriptionId ?? null);
           setCustomerId(data.customerId ?? null);
           setCurrentPeriodEnd(data.currentPeriodEnd ?? null);
+          setRenewalDate(
+            data.renewalDate ??
+              (data.currentPeriodEnd
+                ? new Date(data.currentPeriodEnd * 1000).toISOString()
+                : null),
+          );
           setSubscriptionStatus(data.subscriptionStatus ?? null);
           if (data.orderId) setCurrentOrderId(data.orderId);
         }
@@ -175,6 +182,7 @@ export default function ShopSection({ email }: { email: string }) {
           subscriptionId={subscriptionId}
           customerId={customerId}
           currentPeriodEnd={currentPeriodEnd}
+          renewalDate={renewalDate}
           subscriptionStatus={subscriptionStatus}
           orderId={currentOrderId}
           customerEmail={customerEmail}
