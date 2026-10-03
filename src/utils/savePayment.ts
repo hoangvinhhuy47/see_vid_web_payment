@@ -24,9 +24,10 @@ export interface PaymentWebData {
   currentPeriodStart?: number | null; // Unix timestamp in seconds
   currentPeriodEnd?: number | null;   // Unix timestamp in seconds (ngày gia hạn gói)
   renewalDate?: string | null;        // ISO String / Formatted Date (ngày gia hạn gói)
-  // Flutter activation — set false at web, updated by Cloud Function later
+  // Flutter activation
   isActivated: boolean;
   activatedAt: null;
+  activatedDeviceId?: string | null;
 }
 
 /**

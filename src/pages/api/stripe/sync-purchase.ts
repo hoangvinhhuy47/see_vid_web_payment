@@ -55,20 +55,7 @@ export default async function handler(
   }
 
   try {
-    const { deviceId, orderId, email, userId: bodyUserId } = req.body ?? {};
-
-    // Lấy userId trực tiếp từ body hoặc header (không cần verify token phức tạp)
-    const headerUserId =
-      typeof req.headers["x-user-id"] === "string"
-        ? req.headers["x-user-id"].trim()
-        : typeof req.headers.authorization === "string" &&
-            req.headers.authorization.startsWith("Bearer ")
-          ? req.headers.authorization.slice(7).trim()
-          : "";
-
-    const userId = (bodyUserId || headerUserId || "default_user")
-      .toString()
-      .trim();
+    const { deviceId, orderId, email } = req.body ?? {};
 
     if (
       typeof deviceId !== "string" ||
@@ -119,19 +106,11 @@ export default async function handler(
     for (const docSnap of paymentDocs) {
       const data = docSnap.data();
 
-      if (data.activatedAt != null) {
+      if (data.activatedDeviceId && data.activatedDeviceId !== deviceId) {
         return res.status(409).json({
           success: false,
           code: "DEVICE_MISMATCH",
           message: "Subscription is activated on another device",
-        });
-      }
-
-      if (data.claimedUserId && data.claimedUserId !== userId) {
-        return res.status(409).json({
-          success: false,
-          code: "PURCHASE_ALREADY_CLAIMED",
-          message: "This purchase has already been claimed by another user",
         });
       }
     }
@@ -276,7 +255,7 @@ export default async function handler(
     }
 
     // 5. Đồng bộ Firestore bằng transaction (Chống Race Condition)
-    const memberDocRef = doc(db, "members", userId);
+    const memberDocRef = doc(db, "members", deviceId);
 
     const result = await runTransaction(db, async (tx) => {
       // 1. Read phase: Đọc tất cả document cần thiết trước khi bắt đầu ghi
@@ -294,7 +273,7 @@ export default async function handler(
 
       const memberSnap = await tx.get(memberDocRef);
 
-      // Kiểm tra lại ownership và thiết bị trước khi ghi
+      // Kiểm tra lại thiết bị trước khi ghi
       for (let i = 0; i < verified.length; i++) {
         const payment = latestPayments[i];
 
@@ -304,26 +283,22 @@ export default async function handler(
 
         const latest = payment.data() as any;
 
-        if (latest.claimedUserId && latest.claimedUserId !== userId) {
-          throw new Error("PURCHASE_ALREADY_CLAIMED");
-        }
-
         if (
-          latest.activatedAt != null &&
+          latest.activatedDeviceId &&
           latest.activatedDeviceId !== deviceId
         ) {
-          throw new Error(
-            latest.activatedDeviceId
-              ? "DEVICE_MISMATCH"
-              : "ACTIVATED_DEVICE_UNKNOWN",
-          );
+          throw new Error("DEVICE_MISMATCH");
         }
 
         const existingPurchaseData = existingPurchases[i].exists()
           ? (existingPurchases[i].data() as any)
           : null;
-        if (existingPurchaseData && existingPurchaseData.userId !== userId) {
-          throw new Error("PURCHASE_ALREADY_CLAIMED");
+        if (
+          existingPurchaseData &&
+          existingPurchaseData.deviceId &&
+          existingPurchaseData.deviceId !== deviceId
+        ) {
+          throw new Error("DEVICE_MISMATCH");
         }
       }
 
@@ -357,7 +332,6 @@ export default async function handler(
           status: item.subscription.status,
           productId: latest.lookupKey ?? latest.productId ?? "subscription",
           type: "subscription",
-          userId: userId,
           subscriptionId: item.subscription.id,
           priceId: item.data.priceId ?? null,
           isActive: item.isActive,
@@ -378,15 +352,13 @@ export default async function handler(
           isActive: item.isActive,
           isExpired: item.isExpired,
           lastStripeVerifiedAt: serverTimestamp(),
-          claimedUserId: userId,
         };
 
         // Chỉ cộng credits và khóa thiết bị khi subscription đang còn hiệu lực và chưa từng kích hoạt
-        const isFirstActivation = item.isActive && latest.activatedAt == null;
+        const isFirstActivation = item.isActive && !latest.activatedDeviceId;
         if (isFirstActivation) {
           paymentUpdates.activatedAt = serverTimestamp();
           paymentUpdates.activatedDeviceId = deviceId;
-          paymentUpdates.activatedBy = userId;
 
           if (item.creditsToAdd > 0) {
             totalCreditsAdded += item.creditsToAdd;
@@ -419,7 +391,7 @@ export default async function handler(
           memberDocRef,
           {
             credits: currentCredits + totalCreditsAdded,
-            userId: userId,
+            deviceId: deviceId,
             last_login_time: serverTimestamp(),
           },
           { merge: true },
@@ -456,7 +428,6 @@ export default async function handler(
 
     return res.status(200).json({
       success: true,
-      userId,
       deviceId,
       creditsAdded: result.totalCreditsAdded,
       subscriptions: result.subscriptions,
@@ -470,22 +441,6 @@ export default async function handler(
         success: false,
         code: "DEVICE_MISMATCH",
         message: "Subscription is activated on another device",
-      });
-    }
-
-    if (message === "ACTIVATED_DEVICE_UNKNOWN") {
-      return res.status(409).json({
-        success: false,
-        code: "ACTIVATED_DEVICE_UNKNOWN",
-        message: "Purchase was activated before, but device ID is missing",
-      });
-    }
-
-    if (message === "PURCHASE_ALREADY_CLAIMED") {
-      return res.status(409).json({
-        success: false,
-        code: "PURCHASE_ALREADY_CLAIMED",
-        message: "Purchase has already been claimed by another account",
       });
     }
 
