@@ -16,7 +16,7 @@ export type OpenMagicSwapButtonProps = {
 
 const SEE_VID_BUNDLE_ID = "com.bho.videoai";
 const SEE_VID_APPLE_ID = "6788194400";
-const SEE_VID_SCHEME = "seevid";
+const SEE_VID_SCHEME = "seevidapp";
 const FACEBOOK_PLAY_URL = "https://fb.gg/play/puzz_game";
 
 const buildAndroidStoreUrl = (
@@ -135,7 +135,7 @@ export default function OpenMagicSwapButton({
   modelId,
   autoOpen = false,
   showButton = true,
-  buttonText = "DOWNLOAD APP ĐỂ NHẬN RESULT",
+  buttonText = "DOWNLOAD APP",
   className,
 }: OpenMagicSwapButtonProps) {
   const openApp = useCallback(() => {

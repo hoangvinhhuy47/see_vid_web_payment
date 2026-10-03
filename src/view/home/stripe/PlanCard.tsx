@@ -175,7 +175,7 @@ export default function PlanCards({
                       alt="Logo"
                       className="h-[15px] w-auto shrink-0 object-contain"
                     />
-                    {meta.planDescription || ''}
+                    +{meta.planDescription || ''}Credits
                   </div>
                 </div>
               </div>
