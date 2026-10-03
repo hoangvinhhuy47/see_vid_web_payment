@@ -260,7 +260,7 @@ export default async function handler(
     const result = await runTransaction(db, async (tx) => {
       // 1. Read phase: Đọc tất cả document cần thiết trước khi bắt đầu ghi
       const purchaseRefs = verified.map((item) =>
-        doc(db, "purchase", `stripe_${item.data.orderId}`),
+        doc(db, "purchases", `stripe_${item.data.orderId}`),
       );
 
       const latestPayments = await Promise.all(
