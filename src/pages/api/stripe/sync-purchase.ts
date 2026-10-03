@@ -20,18 +20,18 @@ const stripe = stripeSecretKey ? new Stripe(stripeSecretKey) : null;
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   // CORS support
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
-    "GET,OPTIONS,PATCH,DELETE,POST,PUT"
+    "GET,OPTIONS,PATCH,DELETE,POST,PUT",
   );
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization, X-User-Id"
+    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization, X-User-Id",
   );
 
   if (req.method === "OPTIONS") {
@@ -66,7 +66,9 @@ export default async function handler(
           ? req.headers.authorization.slice(7).trim()
           : "";
 
-    const userId = (bodyUserId || headerUserId || "default_user").toString().trim();
+    const userId = (bodyUserId || headerUserId || "default_user")
+      .toString()
+      .trim();
 
     if (
       typeof deviceId !== "string" ||
@@ -83,11 +85,15 @@ export default async function handler(
     // 2. Tìm giao dịch trong Firestore collection `payment_web`
     const paymentCol = collection(db, "payment_web");
     const q = orderId
-      ? query(paymentCol, where("orderId", "==", String(orderId).trim()), limit(2))
+      ? query(
+          paymentCol,
+          where("orderId", "==", String(orderId).trim()),
+          limit(2),
+        )
       : query(
           paymentCol,
           where("customerEmail", "==", String(email).trim().toLowerCase()),
-          limit(20)
+          limit(20),
         );
 
     const querySnapshot = await getDocs(q);
@@ -114,21 +120,11 @@ export default async function handler(
       const data = docSnap.data();
 
       if (data.activatedAt != null) {
-        if (!data.activatedDeviceId) {
-          return res.status(409).json({
-            success: false,
-            code: "ACTIVATED_DEVICE_UNKNOWN",
-            message: "Purchase was activated before, but device ID is missing",
-          });
-        }
-
-        if (data.activatedDeviceId !== deviceId) {
-          return res.status(409).json({
-            success: false,
-            code: "DEVICE_MISMATCH",
-            message: "Subscription is activated on another device",
-          });
-        }
+        return res.status(409).json({
+          success: false,
+          code: "DEVICE_MISMATCH",
+          message: "Subscription is activated on another device",
+        });
       }
 
       if (data.claimedUserId && data.claimedUserId !== userId) {
@@ -150,6 +146,7 @@ export default async function handler(
       expiryMs: number;
       isExpired: boolean;
       isActive: boolean;
+      creditsToAdd: number;
     }
 
     const verified: VerifiedItem[] = [];
@@ -168,7 +165,12 @@ export default async function handler(
       let subscription: Stripe.Subscription;
 
       try {
-        subscription = await stripe.subscriptions.retrieve(data.subscriptionId);
+        subscription = await stripe.subscriptions.retrieve(
+          data.subscriptionId,
+          {
+            expand: ["items.data.price.product"],
+          },
+        );
       } catch (error: any) {
         if (
           error instanceof Stripe.errors.StripeInvalidRequestError &&
@@ -181,6 +183,28 @@ export default async function handler(
           });
         }
         throw error;
+      }
+
+      // Lấy credit từ Product description hoặc metadata
+      const product = subscription.items.data[0]?.price.product as any;
+      let creditsToAdd = 0;
+
+      if (product && typeof product === "object" && !product.deleted) {
+        if (product.description) {
+          const match = product.description.match(/(\d+[\d,.]*)/);
+          if (match) {
+            const num = parseInt(match[1].replace(/[,.]/g, ""), 10);
+            if (Number.isSafeInteger(num) && num > 0) {
+              creditsToAdd = num;
+            }
+          }
+        }
+        if (!creditsToAdd && product.metadata?.credits) {
+          const num = parseInt(product.metadata.credits, 10);
+          if (Number.isSafeInteger(num) && num > 0) {
+            creditsToAdd = num;
+          }
+        }
       }
 
       const customerId =
@@ -197,7 +221,7 @@ export default async function handler(
       }
 
       const stripePriceIds = subscription.items.data.map(
-        (item) => item.price.id
+        (item) => item.price.id,
       );
 
       if (data.priceId && !stripePriceIds.includes(data.priceId)) {
@@ -212,7 +236,8 @@ export default async function handler(
       const periodEnds = subscription.items.data
         .map((item: any) => item.current_period_end)
         .filter(
-          (value: any): value is number => typeof value === "number" && value > 0
+          (value: any): value is number =>
+            typeof value === "number" && value > 0,
         );
 
       if (periodEnds.length === 0) {
@@ -228,7 +253,9 @@ export default async function handler(
         .map((item: any) => item.current_period_start)
         .filter((value: any): value is number => typeof value === "number");
       const periodStart =
-        periodStarts.length > 0 ? Math.min(...periodStarts) : Math.floor(Date.now() / 1000);
+        periodStarts.length > 0
+          ? Math.min(...periodStarts)
+          : Math.floor(Date.now() / 1000);
 
       const expiryMs = periodEnd * 1000;
       const isExpired = expiryMs <= Date.now();
@@ -244,22 +271,28 @@ export default async function handler(
         expiryMs,
         isExpired,
         isActive,
+        creditsToAdd,
       });
     }
 
     // 5. Đồng bộ Firestore bằng transaction (Chống Race Condition)
+    const memberDocRef = doc(db, "members", userId);
+
     const result = await runTransaction(db, async (tx) => {
+      // 1. Read phase: Đọc tất cả document cần thiết trước khi bắt đầu ghi
       const purchaseRefs = verified.map((item) =>
-        doc(db, "purchases", `stripe_${item.data.orderId}`)
+        doc(db, "purchase", `stripe_${item.data.orderId}`),
       );
 
       const latestPayments = await Promise.all(
-        verified.map((item) => tx.get(item.docRef))
+        verified.map((item) => tx.get(item.docRef)),
       );
 
       const existingPurchases = await Promise.all(
-        purchaseRefs.map((ref) => tx.get(ref))
+        purchaseRefs.map((ref) => tx.get(ref)),
       );
+
+      const memberSnap = await tx.get(memberDocRef);
 
       // Kiểm tra lại ownership và thiết bị trước khi ghi
       for (let i = 0; i < verified.length; i++) {
@@ -282,20 +315,21 @@ export default async function handler(
           throw new Error(
             latest.activatedDeviceId
               ? "DEVICE_MISMATCH"
-              : "ACTIVATED_DEVICE_UNKNOWN"
+              : "ACTIVATED_DEVICE_UNKNOWN",
           );
         }
 
-        const existingPurchaseData = existingPurchases[i].exists() ? (existingPurchases[i].data() as any) : null;
-        if (
-          existingPurchaseData &&
-          existingPurchaseData.userId !== userId
-        ) {
+        const existingPurchaseData = existingPurchases[i].exists()
+          ? (existingPurchases[i].data() as any)
+          : null;
+        if (existingPurchaseData && existingPurchaseData.userId !== userId) {
           throw new Error("PURCHASE_ALREADY_CLAIMED");
         }
       }
 
+      // 2. Write phase: Ghi dữ liệu vào purchase, payment_web và members
       const subscriptions = [];
+      let totalCreditsAdded = 0;
 
       for (let i = 0; i < verified.length; i++) {
         const item = verified[i];
@@ -324,6 +358,12 @@ export default async function handler(
           productId: latest.lookupKey ?? latest.productId ?? "subscription",
           type: "subscription",
           userId: userId,
+          subscriptionId: item.subscription.id,
+          priceId: item.data.priceId ?? null,
+          isActive: item.isActive,
+          isExpired: item.isExpired,
+          credits: item.creditsToAdd,
+          syncedAt: serverTimestamp(),
         };
 
         // Ghi vào collection `purchase`
@@ -341,11 +381,18 @@ export default async function handler(
           claimedUserId: userId,
         };
 
-        // Chỉ khóa thiết bị khi subscription đang còn hiệu lực
-        if (item.isActive && latest.activatedAt == null) {
+        // Chỉ cộng credits và khóa thiết bị khi subscription đang còn hiệu lực và chưa từng kích hoạt
+        const isFirstActivation = item.isActive && latest.activatedAt == null;
+        if (isFirstActivation) {
           paymentUpdates.activatedAt = serverTimestamp();
           paymentUpdates.activatedDeviceId = deviceId;
           paymentUpdates.activatedBy = userId;
+
+          if (item.creditsToAdd > 0) {
+            totalCreditsAdded += item.creditsToAdd;
+            paymentUpdates.creditsGranted = true;
+            paymentUpdates.creditsAmount = item.creditsToAdd;
+          }
         }
 
         tx.update(item.docRef, paymentUpdates);
@@ -358,17 +405,35 @@ export default async function handler(
           isActive: item.isActive,
           isExpired: item.isExpired,
           expiryDate: new Date(item.expiryMs).toISOString(),
+          creditsAdded: isFirstActivation ? item.creditsToAdd : 0,
         });
       }
 
-      return subscriptions;
+      // Cộng credits vào bảng `members`
+      if (totalCreditsAdded > 0) {
+        const currentCredits = memberSnap.exists()
+          ? Number(memberSnap.data()?.credits ?? 0)
+          : 0;
+
+        tx.set(
+          memberDocRef,
+          {
+            credits: currentCredits + totalCreditsAdded,
+            userId: userId,
+            last_login_time: serverTimestamp(),
+          },
+          { merge: true },
+        );
+      }
+
+      return { subscriptions, totalCreditsAdded };
     });
 
     // 6. Đọc purchase từ Firestore sau khi cập nhật
     const purchaseSnapshots = await Promise.all(
-      result.map((item) =>
-        getDoc(doc(db, "purchases", `stripe_${item.orderId}`))
-      )
+      result.subscriptions.map((item) =>
+        getDoc(doc(db, "purchase", `stripe_${item.orderId}`)),
+      ),
     );
 
     const purchases = purchaseSnapshots
@@ -381,11 +446,11 @@ export default async function handler(
           expiryDate:
             data.expiryDate instanceof Timestamp
               ? data.expiryDate.toDate().toISOString()
-              : data.expiryDate ?? null,
+              : (data.expiryDate ?? null),
           purchaseDate:
             data.purchaseDate instanceof Timestamp
               ? data.purchaseDate.toDate().toISOString()
-              : data.purchaseDate ?? null,
+              : (data.purchaseDate ?? null),
         };
       });
 
@@ -393,7 +458,8 @@ export default async function handler(
       success: true,
       userId,
       deviceId,
-      subscriptions: result,
+      creditsAdded: result.totalCreditsAdded,
+      subscriptions: result.subscriptions,
       purchases,
     });
   } catch (error: any) {
