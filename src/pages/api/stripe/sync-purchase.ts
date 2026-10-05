@@ -283,10 +283,7 @@ export default async function handler(
 
         const latest = payment.data() as any;
 
-        if (
-          latest.activatedDeviceId &&
-          latest.activatedDeviceId !== deviceId
-        ) {
+        if (latest.activatedDeviceId && latest.activatedDeviceId !== deviceId) {
           throw new Error("DEVICE_MISMATCH");
         }
 
@@ -330,17 +327,12 @@ export default async function handler(
           orderId: latest.orderId,
           purchaseDate: purchaseDate,
           status: item.subscription.status,
+          userId: "",
           productId: latest.lookupKey ?? latest.productId ?? "subscription",
           type: "subscription",
-          subscriptionId: item.subscription.id,
-          priceId: item.data.priceId ?? null,
-          isActive: item.isActive,
-          isExpired: item.isExpired,
-          credits: item.creditsToAdd,
-          syncedAt: serverTimestamp(),
         };
 
-        // Ghi vào collection `purchase`
+        // Ghi vào collection `purchases`
         tx.set(purchaseRef, purchasePayload, { merge: true });
 
         // Cập nhật trạng thái và device lock trong `payment_web`
@@ -404,7 +396,7 @@ export default async function handler(
     // 6. Đọc purchase từ Firestore sau khi cập nhật
     const purchaseSnapshots = await Promise.all(
       result.subscriptions.map((item) =>
-        getDoc(doc(db, "purchase", `stripe_${item.orderId}`)),
+        getDoc(doc(db, "purchases", `stripe_${item.orderId}`)),
       ),
     );
 
